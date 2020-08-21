@@ -92,9 +92,14 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
-            "scripts": []
+            "scripts": [
+              "./node_modules/jquery/dist/jquery.min.js",
+              "./node_modules/popper.js/dist/umd/popper.min.js",
+              "./node_modules/bootstrap/dist/js/bootstrap.min.js"
+            ]
           }
         },
         "lint": {
@@ -123,6 +128,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "stackOverFlow"
+    }
+  },
+  "defaultProject": "stackOverFlow",
+  "cli": {
+    "analytics": "73fbcc3f-3b86-4293-b9c3-7e9c6b2e009b"
+  }
 }
