@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {Subscription} from 'rxjs';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-home-page',
@@ -9,15 +8,13 @@ import {Subscription} from 'rxjs';
 })
 export class HomePageComponent implements OnInit {
 
-  private querySubscription: Subscription;
   userName: string
 
-  constructor(route: ActivatedRoute) {
-    this.querySubscription = route.queryParams.subscribe(
-      (queryParam: any) => {
-        this.userName = queryParam['userName'];
-      }
-    );
+  constructor(auth: AuthService) {
+
+    auth.user.subscribe((user)=>{
+      this.userName = user.email
+    })
   }
 
   ngOnInit(): void {

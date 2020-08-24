@@ -21,10 +21,8 @@ export class AuthService {
     this.firebaseAuth
       .auth
       .createUserWithEmailAndPassword(email, password)
-      .then( (value) => {
-        this.router.navigate(['/'],{
-          queryParams: { userName: value.user.email}
-        })
+      .then( () => {
+        this.router.navigate(['/'])
       })
       .catch(err => {
         console.log(err)
@@ -35,10 +33,8 @@ export class AuthService {
     this.firebaseAuth
       .auth
       .signInWithEmailAndPassword(email, password)
-      .then(value => {
-        this.router.navigate(['/'],{
-          queryParams: { userName: value.user.email}
-        })
+      .then(() => {
+        this.router.navigate(['/'])
       })
       .catch(err => {
         console.log(err)
