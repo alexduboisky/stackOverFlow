@@ -1,47 +1,56 @@
 import { Injectable } from '@angular/core';
 
-import { AngularFireAuth } from 'angularfire2/auth';
+import { AngularFireAuth } from '@angular/fire/auth';
 import * as firebase from 'firebase/app';
 import {Observable} from 'rxjs';
+import {Router} from '@angular/router';
 
 
 
 @Injectable()
 export class AuthService {
-  user: Observable<firebase.User>;
 
-  constructor(private firebaseAuth: AngularFireAuth) {
+  public user: Observable<firebase.User>;
+
+  constructor(private firebaseAuth: AngularFireAuth, private router: Router) {
     this.user = firebaseAuth.authState;
   }
+
 
   signup(email: string, password: string) {
     this.firebaseAuth
       .auth
       .createUserWithEmailAndPassword(email, password)
-      .then(value => {
-        return true
+      .then( (value) => {
+        this.router.navigate(['/'],{
+          queryParams: { userName: value.user.email}
+        })
       })
       .catch(err => {
-        return false
+        console.log(err)
       });
   }
 
-  login(email: string, password: string) {
+  login(email: string, password: string){
     this.firebaseAuth
       .auth
       .signInWithEmailAndPassword(email, password)
       .then(value => {
-        return true
+        this.router.navigate(['/'],{
+          queryParams: { userName: value.user.email}
+        })
       })
       .catch(err => {
-        return false
+        console.log(err)
       });
   }
 
   logout() {
     this.firebaseAuth
       .auth
-      .signOut();
+      .signOut().then(() => {
+        this.router.navigate(['login'])
+    });
   }
 
 }

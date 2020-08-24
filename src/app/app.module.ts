@@ -7,11 +7,12 @@ import { LoginPageComponent } from './components/login-page/login-page.component
 import { SignupPageComponent } from './components/signup-page/signup-page.component';
 import { HomePageComponent } from './components/home-page/home-page.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { AngularFireModule } from 'angularfire2';
+import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
-import { AngularFireAuthModule } from 'angularfire2/auth';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import {AngularFireAuthGuardModule} from '@angular/fire/auth-guard'
 
-import {AuthService} from '../app/services/auth.service';
+import {AuthService} from './services/auth.service';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import {AuthService} from '../app/services/auth.service';
     ReactiveFormsModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    AngularFireAuthGuardModule
   ],
   providers: [AuthService],
   bootstrap: [AppComponent],

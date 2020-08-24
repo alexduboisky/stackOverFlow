@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
@@ -11,8 +10,7 @@ import {Router} from '@angular/router';
 export class LoginPageComponent implements OnInit {
 
 
-  constructor(public authService: AuthService,
-              private  router: Router) {}
+  constructor(public authService: AuthService) {}
 
   form: FormGroup
 
@@ -29,18 +27,11 @@ export class LoginPageComponent implements OnInit {
     })
   }
 
-  // login() {
-  //   this.authService.login(this.form.get('email').value, this.form.get('password').value);
-  // }
+  login() {
+    this.authService.login(this.form.get('email').value, this.form.get('password').value)
+  }
 
   submit() {
-
-
-    if (this.form.valid){
-      this.authService.login(this.form.get('email').value, this.form.get('password').value)
-      // if ()
-    }
-
-    this.router.navigate(['/'])
+    this.login()
   }
 }
