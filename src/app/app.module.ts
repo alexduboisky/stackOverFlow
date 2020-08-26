@@ -12,7 +12,7 @@ import { environment } from '../environments/environment';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import {AngularFireAuthGuardModule} from '@angular/fire/auth-guard'
 
-import {AuthService} from './services/auth.service';
+import {AuthService} from './shared/services/auth.service';
 
 
 @NgModule({
