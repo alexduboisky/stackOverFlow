@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-signup-page',
@@ -9,9 +10,10 @@ import { AuthService } from '../../services/auth.service';
 })
 export class SignupPageComponent implements OnInit {
 
-  constructor(public authService: AuthService) {}
+  constructor(public authService: AuthService, private router: Router) {}
 
-  form: FormGroup
+  form: FormGroup;
+  public error: string;
 
   ngOnInit(): void {
     this.form = new FormGroup({
@@ -26,15 +28,14 @@ export class SignupPageComponent implements OnInit {
     })
   }
 
-  signup() {
-    this.authService.signup(this.form.get('email').value, this.form.get('password').value);
-  }
-
   submit() {
-    if (this.form.valid){
-      this.signup()
-      this.form.reset()
-    }
+    this.authService.signup(this.form.get('email').value, this.form.get('password').value)
+      .then( () => {
+        this.router.navigate(['/'])
+      })
+      .catch(err => {
+        this.error = err.message
+      });
   }
 
 }

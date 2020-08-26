@@ -12,33 +12,18 @@ export class AuthService {
 
   public user: Observable<firebase.User>;
 
+
   constructor(private firebaseAuth: AngularFireAuth, private router: Router) {
     this.user = firebaseAuth.authState;
   }
 
 
   signup(email: string, password: string) {
-    this.firebaseAuth
-      .auth
-      .createUserWithEmailAndPassword(email, password)
-      .then( () => {
-        this.router.navigate(['/'])
-      })
-      .catch(err => {
-        console.log(err)
-      });
+    return this.firebaseAuth.auth.createUserWithEmailAndPassword(email, password)
   }
 
   login(email: string, password: string){
-    this.firebaseAuth
-      .auth
-      .signInWithEmailAndPassword(email, password)
-      .then(() => {
-        this.router.navigate(['/'])
-      })
-      .catch(err => {
-        console.log(err)
-      });
+    return this.firebaseAuth.auth.signInWithEmailAndPassword(email, password)
   }
 
   logout() {
