@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {HomePageComponent} from './components/home-page/home-page.component';
-import {LoginPageComponent} from './components/login-page/login-page.component';
-import {SignupPageComponent} from './components/signup-page/signup-page.component';
+import {HomePageComponent} from './questionModule/components/home-page/home-page.component';
+import {LoginPageComponent} from './authModule/components/login-page/login-page.component';
+import {SignupPageComponent} from './authModule/components/signup-page/signup-page.component';
 import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
 import {redirectUnauthorizedTo, redirectLoggedInTo } from '@angular/fire/auth-guard';
 

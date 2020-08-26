@@ -3,9 +3,9 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LoginPageComponent } from './components/login-page/login-page.component';
-import { SignupPageComponent } from './components/signup-page/signup-page.component';
-import { HomePageComponent } from './components/home-page/home-page.component';
+import { LoginPageComponent } from './authModule/components/login-page/login-page.component';
+import { SignupPageComponent } from './authModule/components/signup-page/signup-page.component';
+import { HomePageComponent } from './questionModule/components/home-page/home-page.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';

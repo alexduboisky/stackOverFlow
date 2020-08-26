@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {AuthService} from './services/auth.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -9,11 +10,15 @@ import {AuthService} from './services/auth.service';
 export class AppComponent {
   title = 'stackOverFlow';
 
-  constructor(private auth: AuthService) {
+  constructor(private auth: AuthService, private router: Router) {
   }
 
 
   logout() {
     this.auth.logout()
+      .then(() => {
+        //this.auth.user.subscribe()
+        this.router.navigate(['login'])
+    });
   }
 }

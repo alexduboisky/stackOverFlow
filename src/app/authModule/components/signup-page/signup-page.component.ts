@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../../services/auth.service';
 import {Router} from '@angular/router';
 
 @Component({
@@ -28,7 +28,8 @@ export class SignupPageComponent implements OnInit {
     })
   }
 
-  submit() {
+  submit(event) {
+    event.preventDefault();
     this.authService.signup(this.form.get('email').value, this.form.get('password').value)
       .then( () => {
         this.router.navigate(['/'])
@@ -36,6 +37,39 @@ export class SignupPageComponent implements OnInit {
       .catch(err => {
         this.error = err.message
       });
+  }
+
+  loginWithGoogle(event) {
+    event.preventDefault();
+    this.authService.loginWithGoogle()
+      .then(()=>{
+        this.router.navigate(['/'])
+      })
+      .catch(err=>{
+        this.error = err.message
+      })
+  }
+
+  loginWithGitHub(event) {
+    event.preventDefault();
+    this.authService.loginWithGitHub()
+      .then(()=>{
+        this.router.navigate(['/'])
+      })
+      .catch(err=>{
+        this.error = err.message
+      })
+  }
+
+  loginWithMicrosoft(event) {
+    event.preventDefault();
+    this.authService.loginWithMicrosoft()
+      .then(()=>{
+        this.router.navigate(['/'])
+      })
+      .catch(err=>{
+        this.error = err.message
+      })
   }
 
 }
