@@ -38,7 +38,7 @@
         </div>
 
         <div>
-          <span>{{error}}</span>
+          <span *ngIf="error!='The popup has been closed by the user before finalizing the operation.'">{{error}}</span>
         </div>
         <hr>
         <button type="submit" class="btn btn-primary btn-block btn-lg" [disabled]="!form.valid">Sign In</button>

@@ -27,17 +27,17 @@ export class AuthService {
 
   async loginWithGoogle(){
     const provider = new auth.GoogleAuthProvider();
-    return await this.firebaseAuth.auth.signInWithRedirect(provider)
+    return await this.firebaseAuth.auth.signInWithPopup(provider)
   }
 
   async loginWithGitHub(){
     const  provider = new auth.GithubAuthProvider();
-    return await this.firebaseAuth.auth.signInWithRedirect(provider)
+    return await this.firebaseAuth.auth.signInWithPopup(provider)
   }
 
   async loginWithMicrosoft(){
     const  provider = new auth.OAuthProvider('microsoft.com');
-    return await this.firebaseAuth.auth.signInWithRedirect(provider)
+    return await this.firebaseAuth.auth.signInWithPopup(provider)
   }
 
   logout() {

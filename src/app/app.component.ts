@@ -14,13 +14,7 @@ export class AppComponent {
 
   constructor(private auth: AuthService, private router: Router) {
     auth.user.subscribe((user)=>{
-      console.log(user)
-      if (user!=null){
-        return this.isAuth = true
-      }
-      else {
-        return this.isAuth = false
-      }
+      this.isAuth = user != null;
     })
   }
 

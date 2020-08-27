@@ -14,7 +14,7 @@ export class LoginPageComponent implements OnInit {
   constructor(public authService: AuthService, private router: Router) {}
 
   form: FormGroup;
-  public error: string;
+  public error: any;
 
   ngOnInit(): void {
 
