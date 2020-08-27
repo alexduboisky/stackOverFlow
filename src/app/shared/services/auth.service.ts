@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 
-import {AngularFireAuth} from '@angular/fire/auth';
 import * as firebase from 'firebase/app';
+import {AngularFireAuth} from '@angular/fire/auth';
 import {Observable} from 'rxjs';
-import {auth} from 'firebase';
+import {auth} from 'firebase/app';
 
 
 @Injectable()
@@ -21,27 +21,23 @@ export class AuthService {
     return this.firebaseAuth.auth.createUserWithEmailAndPassword(email, password)
   }
 
-  signupWithGoogle(){
-    return this.firebaseAuth.auth.signInWithPopup(new auth.GoogleAuthProvider())
-  }
-
   login(email: string, password: string){
     return this.firebaseAuth.auth.signInWithEmailAndPassword(email, password)
   }
 
   async loginWithGoogle(){
     const provider = new auth.GoogleAuthProvider();
-    return await this.firebaseAuth.auth.signInWithPopup(provider)
+    return await this.firebaseAuth.auth.signInWithRedirect(provider)
   }
 
   async loginWithGitHub(){
     const  provider = new auth.GithubAuthProvider();
-    return await this.firebaseAuth.auth.signInWithPopup(provider)
+    return await this.firebaseAuth.auth.signInWithRedirect(provider)
   }
 
   async loginWithMicrosoft(){
     const  provider = new auth.OAuthProvider('microsoft.com');
-    return await this.firebaseAuth.auth.signInWithPopup(provider)
+    return await this.firebaseAuth.auth.signInWithRedirect(provider)
   }
 
   logout() {
