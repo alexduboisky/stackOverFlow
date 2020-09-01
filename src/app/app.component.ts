@@ -28,4 +28,8 @@ export class AppComponent {
         this.router.navigate(['login'])
     });
   }
+
+  addQuestion() {
+    this.router.navigate(['newQuestion'])
+  }
 }

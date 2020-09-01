@@ -1,0 +1,45 @@
+<div class="container">
+  <form [formGroup]="form" class="mt-4">
+    <h2 class="text-center">New question</h2>
+    <hr>
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input type="text" class="form-control form-control-lg" id="title" placeholder="Enter title" formControlName="title">
+    </div>
+    <div *ngIf="form.get('title').invalid && form.get('title').touched">
+            <span  *ngIf="form.get('title').errors.required">
+              The field must not be empty
+            </span>
+    </div>
+    <div class="form-group">
+      <label for="text">Text</label>
+      <textarea class="form-control form-control-lg" id="text" placeholder="Enter text" formControlName="text">
+
+      </textarea>
+    </div>
+    <div *ngIf="form.get('text').invalid && form.get('text').touched">
+            <span  *ngIf="form.get('text').errors.required">
+              The field must not be empty
+            </span>
+    </div>
+    <div class="d-flex">
+      <label class="mr-2">Tags:</label>
+      <div>
+        <div *ngFor="let category of categoryList" class="form-check">
+          <label class="form-check-label">
+            <input type="checkbox" [value]="category" (change)="onCheckboxChange($event)" class="form-check-input">
+            {{category}}
+          </label>
+        </div>
+        <div>
+            <small class="font-italic"  *ngIf="this.form.controls['checkArray'].errors?.required">
+              Checkbox is required, select atleast one value.
+            </small>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <button type="submit" class="btn btn-primary btn-lg mr-1" [disabled]="!form.valid" (click)="submit()">Add</button>
+    <button type="button" class="btn btn-danger btn-lg">Cancel</button>
+  </form>
+</div>
