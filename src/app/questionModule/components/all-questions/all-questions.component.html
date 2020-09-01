@@ -1,0 +1,22 @@
+<div class="container">
+  <div class="row">
+    <div *ngFor="let question of questionsList" class="col d-flex justify-content-center">
+      <div class="card text-center" style="width: 18rem;">
+        <div class="card-body">
+          <div>
+            <h5 class="card-title">{{question.title}}</h5>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between">
+            <div>
+              <p class="card-text">{{question.date}}</p>
+            </div>
+            <div>
+              <a class="card-link" href="#" *ngFor="let tag of question['tags']">{{tag}}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -13,6 +13,8 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import {AngularFireAuthGuardModule} from '@angular/fire/auth-guard'
 
 import {AuthService} from './shared/services/auth.service';
+import { AllQuestionsComponent } from './questionModule/components/all-questions/all-questions.component';
+import { NewQuestionComponent } from './questionModule/components/new-question/new-question.component';
 
 
 @NgModule({
@@ -20,7 +22,9 @@ import {AuthService} from './shared/services/auth.service';
     AppComponent,
     LoginPageComponent,
     SignupPageComponent,
-    HomePageComponent
+    HomePageComponent,
+    AllQuestionsComponent,
+    NewQuestionComponent
   ],
   imports: [
     BrowserModule,
