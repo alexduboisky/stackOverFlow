@@ -1,20 +1,14 @@
 <div class="container">
-  <div class="row">
-    <div *ngFor="let question of questionsList" class="col d-flex justify-content-center">
-      <div class="card text-center" style="width: 18rem;">
+  <div class="row  row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3">
+    <div *ngFor="let question of questionsList" class="col mb-4">
+      <div  class="card text-center d-flex ">
         <div class="card-body">
-          <div>
-            <h5 class="card-title">{{question.title}}</h5>
-          </div>
+          <h5 class="card-title">{{question.title}}</h5>
           <hr>
-          <div class="d-flex justify-content-between">
-            <div>
-              <p class="card-text">{{question.date}}</p>
-            </div>
-            <div>
-              <a class="card-link" href="#" *ngFor="let tag of question['tags']">{{tag}}</a>
-            </div>
-          </div>
+          <a class="card-link" href="#" *ngFor="let tag of question['tags']">{{tag}}</a>
+        </div>
+        <div class="card-footer">
+          <small class="text-muted">{{question.date}}</small>
         </div>
       </div>
     </div>

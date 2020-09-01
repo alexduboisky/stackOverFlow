@@ -14,7 +14,5 @@ export class AllQuestionsComponent implements OnInit {
 
   ngOnInit(): void {
     this.questionsList = questions.questions
-    console.log(this.questionsList)
   }
-
 }
