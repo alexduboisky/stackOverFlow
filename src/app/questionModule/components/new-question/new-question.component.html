@@ -31,7 +31,7 @@
             {{category}}
           </label>
         </div>
-        <div>
+        <div *ngIf="form.controls['checkArray'].touched">
             <small class="font-italic"  *ngIf="this.form.controls['checkArray'].errors?.required">
               Checkbox is required, select atleast one value.
             </small>

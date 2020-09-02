@@ -17,7 +17,7 @@ const routes: Routes = [
       ]},
     {path: 'login', component: LoginPageComponent, canActivate: [AngularFireAuthGuard], data: { authGuardPipe: redirectLoggedInToHome }},
     {path: 'signup', component: SignupPageComponent, canActivate: [AngularFireAuthGuard], data: { authGuardPipe: redirectLoggedInToHome }},
-    {path:'newQuestion', component: NewQuestionComponent, data: { authGuardPipe: redirectUnauthorizedToLogin }}
+    {path:'newQuestion', component: NewQuestionComponent, canActivate:[AngularFireAuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin }}
 ];
 
 @NgModule({

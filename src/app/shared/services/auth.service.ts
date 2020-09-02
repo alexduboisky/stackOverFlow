@@ -4,16 +4,21 @@ import * as firebase from 'firebase/app';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {Observable} from 'rxjs';
 import {auth} from 'firebase/app';
+import {map} from 'rxjs/operators';
 
 
 @Injectable()
 export class AuthService {
 
   public user: Observable<firebase.User>;
+  public userEmail: string
 
 
   constructor(private firebaseAuth: AngularFireAuth) {
-    this.user = firebaseAuth.authState;
+    this.user = firebaseAuth.authState.pipe(map(user=>{
+      this.userEmail = user && user.email
+      return user
+    }));
   }
 
 

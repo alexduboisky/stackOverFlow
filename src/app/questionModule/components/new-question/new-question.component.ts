@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators, FormArray, FormBuilder} from '@angular/forms';
-import {formatDate} from '@angular/common';
 import * as category from '../../../../assets/data/category.json'
 import * as questions from '../../../../assets/data/questions.json'
+import {AuthService} from '../../../shared/services/auth.service';
 
 @Component({
   selector: 'app-new-question',
@@ -14,7 +14,7 @@ export class NewQuestionComponent implements OnInit {
   form: FormGroup
   categoryList: object
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private auth: AuthService) {
     this.form = this.fb.group(
       {title: new FormControl(null,[
         Validators.required
@@ -50,11 +50,11 @@ export class NewQuestionComponent implements OnInit {
     let questionObject: object
     questionObject = {
       title: this.form.value.title,
-      date: formatDate(new Date(), 'dd.MM.yyyy','en'),
+      date: new Date().getTime(),
       text: this.form.value.text,
-      //tags: checkArray
+      author: this.auth.userEmail
     }
 
-    //questions.questions.push(questionObject)
+    console.log(questionObject)
   }
 }
