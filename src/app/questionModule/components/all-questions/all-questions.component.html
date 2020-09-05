@@ -1,4 +1,35 @@
 <div class="container">
+  <ul class="nav nav-pills justify-content-between">
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Filters</a>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="#">Answered</a>
+        <a class="dropdown-item" href="#">Unanswered</a>
+        <a class="dropdown-item" href="#">Solved</a>
+        <div class="dropdown-divider"></div>
+        <a *ngFor="let item of categoryList" class="dropdown-item" href="#">{{item}}</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">For the day</a>
+        <a class="dropdown-item" href="#">For the week</a>
+        <a class="dropdown-item" href="#">For the month</a>
+        <a class="dropdown-item" href="#">For all time</a>
+      </div>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Sort</a>
+    </li>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Settings</a>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="#">Tiled</a>
+        <a class="dropdown-item" href="#">Linear</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item disabled" href="#">Color theme:</a>
+        <a class="dropdown-item" href="#">Dark</a>
+        <a class="dropdown-item" href="#">Light</a>
+      </div>
+    </li>
+  </ul>
   <div class="row  row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3">
     <div *ngFor="let question of questionsList" class="col mb-4">
       <div  class="card text-center d-flex ">
