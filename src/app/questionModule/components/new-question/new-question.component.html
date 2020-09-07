@@ -22,20 +22,29 @@
               The field must not be empty
             </span>
     </div>
-    <div class="d-flex">
-      <label class="mr-2">Tags:</label>
-      <div>
-        <div *ngFor="let category of categoryList" class="form-check">
-          <label class="form-check-label">
-            <input type="checkbox" [value]="category"  (change)="onCheckboxChange($event)" class="form-check-input">
+    <div formArrayName="arrayForCategory">
+      <div *ngFor="let category of form.get('arrayForCategory')['controls']; let i = index">
+
+          <label>
+            <input type="checkbox" [formControlName]="category" [value]="category">
             {{category}}
           </label>
         </div>
-        <div *ngIf="form.controls['checkArray'].touched">
-            <small class="font-italic"  *ngIf="this.form.controls['checkArray'].errors?.required">
-              Checkbox is required, select atleast one value.
-            </small>
+    </div>
+    <div class="d-flex">
+      <label class="mr-2">Tags:</label>
+      <div>
+        <div *ngFor="let category of form.controls" class="form-check">
+          <label class="form-check-label">
+            <input type="checkbox" [value]="category"  class="form-check-input">
+            {{category}}
+          </label>
         </div>
+<!--        <div *ngIf="form.controls['checkArray'].touched">-->
+<!--            <small class="font-italic"  *ngIf="this.form.controls['checkArray'].errors?.required">-->
+<!--              Checkbox is required, select atleast one value.-->
+<!--            </small>-->
+<!--        </div>-->
       </div>
     </div>
     <hr>

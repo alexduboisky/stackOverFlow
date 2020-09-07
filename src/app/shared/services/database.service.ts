@@ -15,7 +15,7 @@ export class DatabaseService {
     this.questionsRef = db.list(this.dbPath)
   }
 
-  createPost(question: Question): void{
-    this.questionsRef.push(question)
+  createPost(question: Question): firebase.database.ThenableReference{
+    return this.questionsRef.push(question)
   }
 }

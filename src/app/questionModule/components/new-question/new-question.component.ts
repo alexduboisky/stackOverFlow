@@ -15,40 +15,43 @@ export class NewQuestionComponent implements OnInit {
 
   form: FormGroup
   categoryList: object
-  checkArray: FormArray = this.form.get('checkArray') as FormArray
+  checkedCategory: any[] = []
 
 
-  constructor(private fb: FormBuilder, private auth: AuthService, private database: DatabaseService, private router: Router) {
-    this.form = this.fb.group(
-      {title: new FormControl(null,[
-        Validators.required
-      ]),
-      text: new FormControl(null,[
-        Validators.required
-      ]),
-      checkArray: this.fb.array([],[Validators.required])
-    })
-  }
+  constructor(private formBuilder: FormBuilder, private auth: AuthService, private database: DatabaseService, private router: Router) {}
 
   ngOnInit(): void {
     this.categoryList = category.category
+    this.form = this.formBuilder.group(
+      {title: new FormControl(null,[
+          Validators.required
+        ]),
+        text: new FormControl(null,[
+          Validators.required
+        ]),
+        arrayForCategory: this.formBuilder.array(
+          this.checkedCategory.map(()=>{this.formBuilder.control('')
+          })
+        )
+      })
+
   }
 
-  onCheckboxChange(e) {
-
-    if (e.target.checked) {
-      this.checkArray.push(new FormControl(e.target.value));
-    } else {
-      let i: number = 0;
-      this.checkArray.controls.forEach((item: FormControl) => {
-        if (item.value == e.target.value) {
-          this.checkArray.removeAt(i);
-          return;
-        }
-        i++;
-      });
-    }
-  }
+  // onCheckboxChange(e) {
+  //   let checkArray: FormArray = this.form.get('checkArray') as FormArray
+  //   if (e.target.checked) {
+  //     checkArray.push(new FormControl(e.target.value));
+  //   } else {
+  //     let i: number = 0;
+  //     checkArray.controls.forEach((item: FormControl) => {
+  //       if (item.value == e.target.value) {
+  //         checkArray.removeAt(i);
+  //         return;
+  //       }
+  //       i++;
+  //     });
+  //   }
+  // }
 
 
   submit() {
@@ -58,9 +61,11 @@ export class NewQuestionComponent implements OnInit {
       date: new Date().getTime().toString(),
       text: this.form.value.text,
       author: this.auth.userEmail,
-      //category: this.checkArray
+      category: this.checkedCategory
     }
     this.database.createPost(questionObject)
-    this.router.navigate(['questions'])
+      .then(()=>this.router.navigate(['questions']))
+      .catch(error=> console.log(error))
+
   }
 }
