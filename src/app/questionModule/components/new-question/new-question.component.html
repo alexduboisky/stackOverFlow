@@ -27,7 +27,7 @@
       <div>
         <div *ngFor="let category of categoryList" class="form-check">
           <label class="form-check-label">
-            <input type="checkbox" [value]="category" (change)="onCheckboxChange($event)" class="form-check-input">
+            <input type="checkbox" [value]="category"  (change)="onCheckboxChange($event)" class="form-check-input">
             {{category}}
           </label>
         </div>

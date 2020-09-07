@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators, FormArray, FormBuilder} from '@angular/forms';
 import * as category from '../../../../assets/data/category.json'
-import * as questions from '../../../../assets/data/questions.json'
 import {AuthService} from '../../../shared/services/auth.service';
+import {DatabaseService} from '../../../shared/services/database.service';
+import {Question} from '../../../shared/classes/question';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-new-question',
@@ -13,8 +15,10 @@ export class NewQuestionComponent implements OnInit {
 
   form: FormGroup
   categoryList: object
+  checkArray: FormArray = this.form.get('checkArray') as FormArray
 
-  constructor(private fb: FormBuilder, private auth: AuthService) {
+
+  constructor(private fb: FormBuilder, private auth: AuthService, private database: DatabaseService, private router: Router) {
     this.form = this.fb.group(
       {title: new FormControl(null,[
         Validators.required
@@ -31,14 +35,14 @@ export class NewQuestionComponent implements OnInit {
   }
 
   onCheckboxChange(e) {
-    let checkArray: FormArray = this.form.get('checkArray') as FormArray;
+
     if (e.target.checked) {
-      checkArray.push(new FormControl(e.target.value));
+      this.checkArray.push(new FormControl(e.target.value));
     } else {
       let i: number = 0;
-      checkArray.controls.forEach((item: FormControl) => {
+      this.checkArray.controls.forEach((item: FormControl) => {
         if (item.value == e.target.value) {
-          checkArray.removeAt(i);
+          this.checkArray.removeAt(i);
           return;
         }
         i++;
@@ -46,15 +50,17 @@ export class NewQuestionComponent implements OnInit {
     }
   }
 
+
   submit() {
-    let questionObject: object
+    let questionObject: Question
     questionObject = {
       title: this.form.value.title,
-      date: new Date().getTime(),
+      date: new Date().getTime().toString(),
       text: this.form.value.text,
-      author: this.auth.userEmail
+      author: this.auth.userEmail,
+      //category: this.checkArray
     }
-
-    console.log(questionObject)
+    this.database.createPost(questionObject)
+    this.router.navigate(['questions'])
   }
 }

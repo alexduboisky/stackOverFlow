@@ -10,6 +10,7 @@ import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import {AngularFireAuthGuardModule} from '@angular/fire/auth-guard'
+import { AngularFireDatabaseModule } from '@angular/fire/database';
 
 import {AuthService} from './shared/services/auth.service';
 import { AllQuestionsComponent } from './questionModule/components/all-questions/all-questions.component';
@@ -34,7 +35,8 @@ import {DatabaseService} from './shared/services/database.service';
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
-    AngularFireAuthGuardModule
+    AngularFireAuthGuardModule,
+    AngularFireDatabaseModule
   ],
   providers: [AuthService, DatabaseService],
   bootstrap: [AppComponent],

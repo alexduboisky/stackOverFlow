@@ -1,9 +1,21 @@
 import { Injectable } from '@angular/core';
+import { AngularFireDatabase, AngularFireList } from '@angular/fire/database';
+import {Question} from '../classes/question';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DatabaseService {
 
-  constructor() { }
+  private dbPath = '/questions'
+
+  questionsRef: AngularFireList<Question> = null;
+
+  constructor(private db: AngularFireDatabase) {
+    this.questionsRef = db.list(this.dbPath)
+  }
+
+  createPost(question: Question): void{
+    this.questionsRef.push(question)
+  }
 }
