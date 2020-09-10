@@ -18,4 +18,8 @@ export class DatabaseService {
   createPost(question: Question): firebase.database.ThenableReference{
     return this.questionsRef.push(question)
   }
+
+  getPostsList(): AngularFireList<Question>{
+    return  this.questionsRef
+  }
 }

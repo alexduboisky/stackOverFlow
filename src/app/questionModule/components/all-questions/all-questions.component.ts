@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import * as questions from '../../../../assets/data/questions.json';
 import {AuthService} from '../../../shared/services/auth.service';
 import * as category from '../../../../assets/data/category.json';
+import {DatabaseService} from '../../../shared/services/database.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-all-questions',
@@ -15,7 +16,7 @@ export class AllQuestionsComponent implements OnInit {
   userName: string
   categoryList: object
 
-  constructor(auth: AuthService){
+  constructor(private auth: AuthService, private firebaseService: DatabaseService){
     auth.user.subscribe((user)=>{
       if (user){
         this.userName = user.email
@@ -26,7 +27,19 @@ export class AllQuestionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.questionsList = questions.questions
+    this.getPostsList()
     this.categoryList = category.category
+  }
+
+  getPostsList() {
+    this.firebaseService.getPostsList().snapshotChanges().pipe(
+      map(changes =>
+        changes.map(c =>
+          ({ key: c.payload.key, ...c.payload.val() })
+        )
+      )
+    ).subscribe(questions => {
+      this.questionsList = questions;
+    });
   }
 }

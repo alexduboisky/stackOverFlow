@@ -3,7 +3,6 @@
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Filters</a>
       <div class="dropdown-menu">
-        <a class="dropdown-item" href="#">Answered</a>
         <a class="dropdown-item" href="#">Unanswered</a>
         <a class="dropdown-item" href="#">Solved</a>
         <div class="dropdown-divider"></div>
@@ -34,12 +33,13 @@
     <div *ngFor="let question of questionsList" class="col mb-4">
       <div  class="card text-center d-flex ">
         <div class="card-body">
+
           <h5 class="card-title">{{question.title}}</h5>
           <hr>
-          <a class="card-link" href="#" *ngFor="let tag of question['tags']">{{tag}}</a>
+          <a class="card-link" href="#" *ngFor="let tag of question['category']">{{tag}}</a>
         </div>
         <div class="card-footer">
-          <small class="text-muted">{{question.date}}</small>
+          <small class="text-muted">{{question.date | date:'dd.MM.yyy'}}</small>
         </div>
       </div>
     </div>
