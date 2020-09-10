@@ -14,9 +14,13 @@ import {Router} from '@angular/router';
 export class NewQuestionComponent implements OnInit {
 
   form: FormGroup
-  categoryList: object
+  categoryList: any[] = []
   checkedCategory: any[] = []
 
+  get categoryFormArray() {
+    console.log(this.form.controls.category)
+    return this.form.controls.category as FormArray;
+  }
 
   constructor(private formBuilder: FormBuilder, private auth: AuthService, private database: DatabaseService, private router: Router) {}
 
@@ -29,30 +33,14 @@ export class NewQuestionComponent implements OnInit {
         text: new FormControl(null,[
           Validators.required
         ]),
-        arrayForCategory: this.formBuilder.array(
-          this.checkedCategory.map(()=>{this.formBuilder.control('')
-          })
-        )
+        category: new FormArray([])
       })
-
+    this.addCheckboxes();
   }
 
-  // onCheckboxChange(e) {
-  //   let checkArray: FormArray = this.form.get('checkArray') as FormArray
-  //   if (e.target.checked) {
-  //     checkArray.push(new FormControl(e.target.value));
-  //   } else {
-  //     let i: number = 0;
-  //     checkArray.controls.forEach((item: FormControl) => {
-  //       if (item.value == e.target.value) {
-  //         checkArray.removeAt(i);
-  //         return;
-  //       }
-  //       i++;
-  //     });
-  //   }
-  // }
-
+  private addCheckboxes() {
+    this.categoryList.forEach(item => this.categoryFormArray.push(new FormControl([item.name,false])));
+  }
 
   submit() {
     let questionObject: Question
