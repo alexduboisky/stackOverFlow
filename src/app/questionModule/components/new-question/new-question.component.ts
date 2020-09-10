@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup, Validators, FormArray, FormBuilder} from '@angular/forms';
+import {FormControl, FormGroup, Validators, FormArray, FormBuilder, ValidatorFn} from '@angular/forms';
 import * as category from '../../../../assets/data/category.json'
 import {AuthService} from '../../../shared/services/auth.service';
 import {DatabaseService} from '../../../shared/services/database.service';
@@ -18,7 +18,6 @@ export class NewQuestionComponent implements OnInit {
   checkedCategory: any[] = []
 
   get categoryFormArray() {
-    console.log(this.form.controls.category)
     return this.form.controls.category as FormArray;
   }
 
@@ -33,27 +32,43 @@ export class NewQuestionComponent implements OnInit {
         text: new FormControl(null,[
           Validators.required
         ]),
-        category: new FormArray([])
+        category: new FormArray([], this.minSelectedCheckboxes(1))
       })
     this.addCheckboxes();
   }
 
   private addCheckboxes() {
-    this.categoryList.forEach(item => this.categoryFormArray.push(new FormControl([item.name,false])));
+    this.categoryList.forEach(() => this.categoryFormArray.push(new FormControl(false)));
   }
 
   submit() {
+
+    const selectedCategoryIds = this.form.value.category
+      .map((checked, i) => checked ? this.categoryList[i].name : null)
+      .filter(v => v !== null);
+
     let questionObject: Question
     questionObject = {
       title: this.form.value.title,
       date: new Date().getTime().toString(),
       text: this.form.value.text,
       author: this.auth.userEmail,
-      category: this.checkedCategory
+      category: selectedCategoryIds
     }
     this.database.createPost(questionObject)
       .then(()=>this.router.navigate(['questions']))
       .catch(error=> console.log(error))
 
+  }
+
+  minSelectedCheckboxes(min = 1) {
+    const validator: ValidatorFn = (formArray: FormArray) => {
+      const totalSelected = formArray.controls
+        .map(control => control.value)
+        .reduce((prev, next) => next ? prev + next : prev, 0);
+      return totalSelected >= min ? null : { required: true };
+    };
+
+    return validator;
   }
 }

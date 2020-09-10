@@ -21,13 +21,21 @@
             <span  *ngIf="form.get('text').errors.required">
               The field must not be empty
             </span>
-    </div>
-    <div>
-      <label formArrayName="category" *ngFor="let category of form.controls.category.value">
-        <input type="checkbox">
-        {{category.name}}
+    </div >
+    <div class="form-group d-flex">
+      <div class="mr-3"><label>Categories:</label></div>
+      <div class="d-flex flex-column">
+        <label formArrayName="category" *ngFor="let category of categoryFormArray.controls; let i = index">
+        <input type="checkbox" [formControlName]="i">
+        {{categoryList[i].name}}
       </label>
+      </div>
     </div>
+    <div *ngIf="!form.valid">
+      <p>
+        At least one category must be selected
+      </p>
+    </div >
     <hr>
     <button type="submit" class="btn btn-primary btn-lg mr-1" [disabled]="!form.valid" (click)="submit()">Add</button>
     <button type="button" class="btn btn-danger btn-lg">Cancel</button>
