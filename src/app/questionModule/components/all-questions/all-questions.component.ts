@@ -11,10 +11,10 @@ import { map } from 'rxjs/operators';
 })
 export class AllQuestionsComponent implements OnInit {
 
-  questionsList: object
+  questionsList = []
 
   userName: string
-  categoryList: object
+  categoryList = []
 
   constructor(private auth: AuthService, private firebaseService: DatabaseService){
     auth.user.subscribe((user)=>{

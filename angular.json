@@ -33,7 +33,8 @@
             "scripts": [],
             "allowedCommonJsDependencies": [
               "firebase/app",
-              "@firebase/auth"
+              "@firebase/auth",
+              "@firebase/database"
             ]
           },
           "configurations": {

@@ -9,8 +9,7 @@
   "files": [
     "src/main.ts",
     "src/polyfills.ts",
-    "src/assets/data/category.json",
-    "src/assets/data/questions.json"
+    "src/assets/data/category.json"
   ],
   "include": [
     "src/**/*.d.ts"
