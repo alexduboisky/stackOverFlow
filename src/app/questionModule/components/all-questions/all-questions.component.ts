@@ -42,4 +42,8 @@ export class AllQuestionsComponent implements OnInit {
       this.questionsList = questions;
     });
   }
+
+  getCurrentQuestion(question) {
+    this.firebaseService.currentQuestion = question
+  }
 }

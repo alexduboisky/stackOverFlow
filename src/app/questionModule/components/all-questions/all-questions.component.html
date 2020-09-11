@@ -33,8 +33,9 @@
     <div *ngFor="let question of questionsList" class="col mb-4">
       <div  class="card text-center d-flex ">
         <div class="card-body">
-
-          <h5 class="card-title">{{question.title}}</h5>
+          <a class="text-dark text-decoration-none" [routerLink]="['/viewQuestion',question.key]" (click)="getCurrentQuestion(question)">
+            <h5 class="card-title">{{question.title}}</h5>
+          </a>
           <hr>
           <a class="card-link" href="#" *ngFor="let tag of question['category']">{{tag}}</a>
         </div>

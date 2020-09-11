@@ -17,6 +17,7 @@ import { AllQuestionsComponent } from './questionModule/components/all-questions
 import { NewQuestionComponent } from './questionModule/components/new-question/new-question.component';
 import { MainPageComponent } from './mainModule/main-page/main-page.component';
 import {DatabaseService} from './shared/services/database.service';
+import { ViewQuestionComponent } from './questionModule/components/view-question/view-question.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import {DatabaseService} from './shared/services/database.service';
     SignupPageComponent,
     AllQuestionsComponent,
     NewQuestionComponent,
-    MainPageComponent
+    MainPageComponent,
+    ViewQuestionComponent
   ],
   imports: [
     BrowserModule,

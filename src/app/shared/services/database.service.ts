@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFireDatabase, AngularFireList } from '@angular/fire/database';
+import { AngularFireDatabase, AngularFireList, AngularFireObject } from '@angular/fire/database';
 import {Question} from '../classes/question';
 
 @Injectable({
@@ -8,8 +8,10 @@ import {Question} from '../classes/question';
 export class DatabaseService {
 
   private dbPath = '/questions'
+  public currentQuestion: any
 
   questionsRef: AngularFireList<Question> = null;
+  questionObj : AngularFireObject<Question> = null
 
   constructor(private db: AngularFireDatabase) {
     this.questionsRef = db.list(this.dbPath)
@@ -22,4 +24,9 @@ export class DatabaseService {
   getPostsList(): AngularFireList<Question>{
     return  this.questionsRef
   }
+  getPost(path): AngularFireObject<Question>{
+    this.questionObj = this.db.object(path)
+    return  this.questionObj
+  }
+
 }
