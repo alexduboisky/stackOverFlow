@@ -22,6 +22,7 @@ export class ViewQuestionComponent implements OnInit {
 
   constructor(private firebaseService: DatabaseService, private router: Router, private user: AuthService) {
     this.dbPath = this.router.url.split('/').reverse()[0]
+
   }
 
   ngOnInit(): void {
@@ -30,6 +31,7 @@ export class ViewQuestionComponent implements OnInit {
     } else {
       this.currentQuestion = this.firebaseService.currentQuestion
       this.isLoading = true
+      this.getCommentsKeys(this.currentQuestion.comments)
     }
     this.form = new FormGroup({
       comment: new FormControl(null,[Validators.required])
@@ -42,10 +44,7 @@ export class ViewQuestionComponent implements OnInit {
       {
         this.currentQuestion = question
         this.isLoading = true
-        for (const commentKey in this.currentQuestion.comments) {
-          this.commentsKeys.push(commentKey)
-        }
-
+        this.getCommentsKeys(this.currentQuestion.comments)
       })
 
   }
@@ -58,5 +57,11 @@ export class ViewQuestionComponent implements OnInit {
         date: new Date().getTime()
       },
       `/questions/${this.dbPath}/comments`)
+  }
+
+  getCommentsKeys(obj: object){
+    for (const commentKey in obj) {
+      this.commentsKeys.push(commentKey)
+    }
   }
 }
