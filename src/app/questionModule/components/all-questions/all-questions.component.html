@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container mt-2">
   <ul class="nav nav-pills justify-content-between">
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Filters</a>
@@ -29,7 +29,7 @@
       </div>
     </li>
   </ul>
-  <div class="row  row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3">
+  <div class="row  row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3" *ngIf="isLoading; else preloader">
     <div *ngFor="let question of questionsList" class="col mb-4">
       <div  class="card text-center d-flex ">
         <div class="card-body">
@@ -46,3 +46,10 @@
     </div>
   </div>
 </div>
+<ng-template #preloader>
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</ng-template>

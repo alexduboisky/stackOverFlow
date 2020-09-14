@@ -12,6 +12,7 @@ import { map } from 'rxjs/operators';
 export class AllQuestionsComponent implements OnInit {
 
   questionsList = []
+  public isLoading: boolean = false
 
   userName: string
   categoryList = []
@@ -40,6 +41,7 @@ export class AllQuestionsComponent implements OnInit {
       )
     ).subscribe(questions => {
       this.questionsList = questions;
+      this.isLoading = true
     });
   }
 

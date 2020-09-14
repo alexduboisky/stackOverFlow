@@ -1,3 +1,46 @@
-<div class="container">
-  <pre>{{currentQuestion | json}}</pre>
+
+<div class="container mt-4">
+  <div class="card" *ngIf="isLoading; else preloader">
+    <div class="card-header d-flex justify-content-between bg-info text-white flex-wrap">
+      <div>
+        {{currentQuestion.author}}
+      </div>
+      <div>
+        {{currentQuestion.date | date:'dd.MM.yyyy'}}
+      </div>
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">{{currentQuestion.title}}</h5>
+      <p class="card-text">{{currentQuestion.text}}</p>
+    </div>
+    <div class="card-footer text-muted text-monospace">
+      <a *ngFor="let category of currentQuestion.category" href="#" class="text-decoration-none">
+        {{category}}
+      </a>
+    </div>
+  </div>
+  <div class="card mt-2">
+    <div class="card-body">
+      <h5>Add answer</h5>
+      <form [formGroup]="form">
+        <div class="form-row">
+          <div class="col-lg-12">
+            <input type="text" class="form-control" placeholder="Your answer" formControlName="comment">
+          </div>
+        </div>
+        <div class="form-row mt-2">
+          <div class="col-lg-2">
+            <input type="submit" class="btn btn-primary" (click)="addAnswer()">
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <ng-template #preloader>
+    <div class="d-flex justify-content-center">
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  </ng-template>
 </div>

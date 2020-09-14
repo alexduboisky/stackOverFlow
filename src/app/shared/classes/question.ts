@@ -4,5 +4,5 @@ export class Question{
   author: string;
   date: string;
   text: string;
-  category: any[];
+  category: object[];
 }
