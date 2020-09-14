@@ -1,12 +1,12 @@
 
-<div class="container mt-4">
-  <div class="card" *ngIf="isLoading; else preloader">
+<div class="container mt-4" *ngIf="isLoading; else preloader">
+  <div class="card">
     <div class="card-header d-flex justify-content-between bg-info text-white flex-wrap">
       <div>
         {{currentQuestion.author}}
       </div>
       <div>
-        {{currentQuestion.date | date:'dd.MM.yyyy'}}
+        {{currentQuestion.date | date:'HH:MM dd.MM.yyyy'}}
       </div>
     </div>
     <div class="card-body">
@@ -19,7 +19,20 @@
       </a>
     </div>
   </div>
-  <div class="card mt-2">
+  <div class="mt-4">
+    <div class="card mt-2" *ngFor="let key of commentsKeys">
+      <div class="card-header">
+        {{currentQuestion.comments[key].author}}
+      </div>
+      <div class="card-body">
+        {{currentQuestion.comments[key].text}}
+      </div>
+      <div class="card-footer">
+        {{currentQuestion.comments[key].date | date:'HH:MM dd.MM.yyyy'}}
+      </div>
+    </div>
+  </div>
+  <div class="card mt-4 mb-4">
     <div class="card-body">
       <h5>Add answer</h5>
       <form [formGroup]="form">
@@ -30,17 +43,17 @@
         </div>
         <div class="form-row mt-2">
           <div class="col-lg-2">
-            <input type="submit" class="btn btn-primary" (click)="addAnswer()">
+            <input type="submit" class="btn btn-primary" [disabled]="!form.valid" (click)="addAnswer()">
           </div>
         </div>
       </form>
     </div>
   </div>
-  <ng-template #preloader>
-    <div class="d-flex justify-content-center">
-      <div class="spinner-border" role="status">
-        <span class="sr-only">Loading...</span>
-      </div>
-    </div>
-  </ng-template>
 </div>
+<ng-template #preloader>
+  <div class="d-flex justify-content-center mt-4">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</ng-template>

@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {DatabaseService} from '../../../shared/services/database.service';
 import {Router} from '@angular/router';
 import {Question} from '../../../shared/classes/question';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import { FormControl, FormGroup, Validators} from '@angular/forms';
+import {AuthService} from '../../../shared/services/auth.service';
+
 
 @Component({
   selector: 'app-view-question',
@@ -15,12 +17,16 @@ export class ViewQuestionComponent implements OnInit {
   public object: any;
   public isLoading: boolean = false
   form: FormGroup
+  dbPath: string
+  commentsKeys: string[] = []
 
-  constructor(private firebaseService: DatabaseService, private router: Router,private formBuilder: FormBuilder) {}
+  constructor(private firebaseService: DatabaseService, private router: Router, private user: AuthService) {
+    this.dbPath = this.router.url.split('/').reverse()[0]
+  }
 
   ngOnInit(): void {
     if (this.firebaseService.currentQuestion == undefined) {
-      this.getPost(`/questions/${this.router.url.split('/').reverse()[0]}`)
+      this.getPost(`/questions/${this.dbPath}`)
     } else {
       this.currentQuestion = this.firebaseService.currentQuestion
       this.isLoading = true
@@ -36,11 +42,21 @@ export class ViewQuestionComponent implements OnInit {
       {
         this.currentQuestion = question
         this.isLoading = true
+        for (const commentKey in this.currentQuestion.comments) {
+          this.commentsKeys.push(commentKey)
+        }
+
       })
 
   }
 
   addAnswer() {
-    console.log(this.form.controls.comment.value)
+    this.firebaseService.addComment(
+      {
+        author:this.user.userEmail,
+        text:this.form.controls.comment.value,
+        date: new Date().getTime()
+      },
+      `/questions/${this.dbPath}/comments`)
   }
 }
