@@ -57,6 +57,8 @@ export class ViewQuestionComponent implements OnInit {
         date: new Date().getTime()
       },
       `/questions/${this.dbPath}/comments`)
+    this.commentsKeys = []
+    this.form.reset()
   }
 
   getCommentsKeys(obj: object){
