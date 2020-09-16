@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {DatabaseService} from '../../../shared/services/database.service';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Question} from '../../../shared/classes/question';
 import { FormControl, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../../../shared/services/auth.service';
@@ -20,18 +20,18 @@ export class ViewQuestionComponent implements OnInit {
   dbPath: string
   commentsKeys: string[] = []
 
-  constructor(private firebaseService: DatabaseService, private router: Router, private user: AuthService) {
-    this.dbPath = this.router.url.split('/').reverse()[0]
+  constructor(private firebaseService: DatabaseService, private router: Router, private user: AuthService, currentRout: ActivatedRoute) {
+    currentRout.url.subscribe(route=>{
+      this.dbPath = route[1].path
+    })
 
   }
- // back from page
+
   ngOnInit(): void {
     if (!this.firebaseService.currentQuestion) {
       this.getPost(`/questions/${this.dbPath}`)
     } else {
-      this.currentQuestion = this.firebaseService.currentQuestion
-      this.isLoading = true
-      this.getCommentsKeys(this.currentQuestion.comments)
+      this.setCurrentQuestion(this.firebaseService.currentQuestion)
     }
     this.form = new FormGroup({
       comment: new FormControl(null,[Validators.required])
@@ -42,16 +42,21 @@ export class ViewQuestionComponent implements OnInit {
     this.firebaseService.getPost(path).valueChanges()
       .subscribe(question=>
       {
-        this.currentQuestion = question
-        this.isLoading = true
-        this.getCommentsKeys(this.currentQuestion.comments)
+        this.setCurrentQuestion(question)
       })
 
   }
 
-  // this.currentQuestion = this.firebaseService.currentQuestion
-  //       this.isLoading = true
-  //       this.getCommentsKeys(this.currentQuestion.comments)
+  backToAllQuestions(){
+    this.router.navigate(['questions'])
+  }
+
+  setCurrentQuestion(question){
+    this.currentQuestion = question
+    this.isLoading = true
+    this.getCommentsKeys(this.currentQuestion.comments)
+  }
+
   addAnswer() {
     this.firebaseService.addComment(
       {
@@ -59,7 +64,7 @@ export class ViewQuestionComponent implements OnInit {
         text:this.form.controls.comment.value,
         date: new Date().getTime()
       },
-      `/questions/${this.dbPath}/comments`).then(a=>console.log(a))
+      `/questions/${this.dbPath}/comments`).then(value => console.log(value))
     this.form.reset()
   }
 

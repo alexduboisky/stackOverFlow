@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {AuthService} from '../../../shared/services/auth.service';
 import * as category from '../../../../assets/data/category.json';
 import {DatabaseService} from '../../../shared/services/database.service';
-import { map } from 'rxjs/operators';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-all-questions',
@@ -11,20 +11,14 @@ import { map } from 'rxjs/operators';
 })
 export class AllQuestionsComponent implements OnInit {
 
-  questionsList = []
+  public questionsList = []
   public isLoading: boolean = false
 
   userName: string
   categoryList = []
 
-  constructor(private auth: AuthService, private firebaseService: DatabaseService){
-    auth.user.subscribe((user)=>{ //
-      if (user){
-        this.userName = user.email
-      }
-    },error => {
-      console.log('some errors',error)
-    })
+  constructor(private auth: AuthService, private firebaseService: DatabaseService, private router: Router){
+    this.userName = auth.userEmail
   }
 
   ngOnInit(): void {
@@ -33,21 +27,14 @@ export class AllQuestionsComponent implements OnInit {
   }
 
   getPostsList() {
-    this.firebaseService.getPostsList().snapshotChanges().pipe( // to service
-      map(changes =>
-        changes.map(c =>
-          ({ key: c.payload.key, ...c.payload.val() })
-        )
-      )
-    ).subscribe(questions => {
+    this.firebaseService.getPostsList().subscribe(questions => {
       this.questionsList = questions;
       this.isLoading = true
     });
   }
 
-  getCurrentQuestion(question) {
-    // navigate
-    // rename func
+  setCurrentQuestion(question) {
+    this.router.navigate(['/viewQuestion',question.key])
     this.firebaseService.currentQuestion = question
   }
 }

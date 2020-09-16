@@ -31,8 +31,7 @@
       </label>
       </div>
     </div>
-    <div *ngIf="!form.valid">
-<!--      check validation-->
+    <div *ngIf="!form.controls.category.valid">
       <p>
         At least one category must be selected
       </p>

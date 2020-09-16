@@ -33,7 +33,7 @@
     <div *ngFor="let question of questionsList" class="col mb-4">
       <div  class="card text-center d-flex ">
         <div class="card-body">
-          <a class="text-dark text-decoration-none" [routerLink]="['/viewQuestion',question.key]" (click)="getCurrentQuestion(question)">
+          <a class="text-dark text-decoration-none" role="button" (click)="setCurrentQuestion(question)">
             <h5 class="card-title">{{question.title}}</h5>
           </a>
           <hr>
