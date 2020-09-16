@@ -9,7 +9,7 @@ import * as firebase from 'firebase';
 export class DatabaseService {
 
   private dbPath = '/questions'
-  public currentQuestion: any
+  public currentQuestion: Question;
 
   questionsRef: AngularFireList<Question> = null;
   questionObj : AngularFireObject<Question> = null

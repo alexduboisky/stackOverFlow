@@ -24,9 +24,9 @@ export class ViewQuestionComponent implements OnInit {
     this.dbPath = this.router.url.split('/').reverse()[0]
 
   }
-
+ // back from page
   ngOnInit(): void {
-    if (this.firebaseService.currentQuestion == undefined) {
+    if (!this.firebaseService.currentQuestion) {
       this.getPost(`/questions/${this.dbPath}`)
     } else {
       this.currentQuestion = this.firebaseService.currentQuestion
@@ -49,6 +49,9 @@ export class ViewQuestionComponent implements OnInit {
 
   }
 
+  // this.currentQuestion = this.firebaseService.currentQuestion
+  //       this.isLoading = true
+  //       this.getCommentsKeys(this.currentQuestion.comments)
   addAnswer() {
     this.firebaseService.addComment(
       {
@@ -56,14 +59,18 @@ export class ViewQuestionComponent implements OnInit {
         text:this.form.controls.comment.value,
         date: new Date().getTime()
       },
-      `/questions/${this.dbPath}/comments`)
-    this.commentsKeys = []
+      `/questions/${this.dbPath}/comments`).then(a=>console.log(a))
     this.form.reset()
   }
 
   getCommentsKeys(obj: object){
+
+    this.commentsKeys = []
+
     for (const commentKey in obj) {
-      this.commentsKeys.push(commentKey)
+      if (obj.hasOwnProperty(commentKey)){
+        this.commentsKeys.push(commentKey)
+      }
     }
   }
 }

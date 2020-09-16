@@ -18,7 +18,7 @@ export class AllQuestionsComponent implements OnInit {
   categoryList = []
 
   constructor(private auth: AuthService, private firebaseService: DatabaseService){
-    auth.user.subscribe((user)=>{
+    auth.user.subscribe((user)=>{ //
       if (user){
         this.userName = user.email
       }
@@ -33,7 +33,7 @@ export class AllQuestionsComponent implements OnInit {
   }
 
   getPostsList() {
-    this.firebaseService.getPostsList().snapshotChanges().pipe(
+    this.firebaseService.getPostsList().snapshotChanges().pipe( // to service
       map(changes =>
         changes.map(c =>
           ({ key: c.payload.key, ...c.payload.val() })
@@ -46,6 +46,8 @@ export class AllQuestionsComponent implements OnInit {
   }
 
   getCurrentQuestion(question) {
+    // navigate
+    // rename func
     this.firebaseService.currentQuestion = question
   }
 }

@@ -47,8 +47,7 @@ export class NewQuestionComponent implements OnInit {
       .map((checked, i) => checked ? this.categoryList[i].name : null)
       .filter(v => v !== null);
 
-    let questionObject: Question
-    questionObject = {
+    const questionObject: Question = {
       title: this.form.value.title,
       date: new Date().getTime().toString(),
       text: this.form.value.text,
