@@ -14,13 +14,13 @@ import {AuthService} from '../../../shared/services/auth.service';
 export class ViewQuestionComponent implements OnInit {
 
   public currentQuestion: Question
-  public object: any;
+  public currentAnswer: any;
   public isLoading: boolean = false
   form: FormGroup
   dbPath: string
   commentsKeys: string[] = []
 
-  constructor(private firebaseService: DatabaseService, private router: Router, private user: AuthService, currentRout: ActivatedRoute) {
+  constructor(private firebaseService: DatabaseService, private router: Router, public user: AuthService, currentRout: ActivatedRoute) {
     currentRout.url.subscribe(route=>{
       this.dbPath = route[1].path
     })
@@ -58,13 +58,18 @@ export class ViewQuestionComponent implements OnInit {
   }
 
   addAnswer() {
+    this.currentAnswer = {
+      author:this.user.userEmail,
+      date: new Date().getTime(),
+      text:this.form.controls.comment.value,
+      right: false
+    }
     this.firebaseService.addComment(
-      {
-        author:this.user.userEmail,
-        text:this.form.controls.comment.value,
-        date: new Date().getTime()
-      },
-      `/questions/${this.dbPath}/comments`).then(value => console.log(value))
+      this.currentAnswer,
+      `/questions/${this.dbPath}/comments`)
+      .then(commentKey => {
+        this.currentQuestion.comments[commentKey.key] = this.currentAnswer
+      })
     this.form.reset()
   }
 
@@ -77,5 +82,16 @@ export class ViewQuestionComponent implements OnInit {
         this.commentsKeys.push(commentKey)
       }
     }
+  }
+
+  generateCommentObjForCurrentQuestion(commentKey: string, fields: object){
+    let newComment: object = {
+      commentKey: {fields}
+    };
+    return newComment
+  }
+
+  toggleRight($event: Event, key: string) {
+    this.currentQuestion.comments[key].right = $event.target['checked']
   }
 }

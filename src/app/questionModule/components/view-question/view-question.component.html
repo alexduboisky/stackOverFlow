@@ -22,14 +22,24 @@
   <pre>{{currentQuestion | json}}</pre>
   <div class="mt-4">
     <div class="card mt-2" *ngFor="let key of commentsKeys">
-      <div class="card-header">
+      <div class="card-header" *ngIf="!currentQuestion.comments[key].right; else rightAnswer">
         {{currentQuestion.comments[key].author}}
       </div>
+      <ng-template #rightAnswer>
+        <div class="card-header bg-success">
+          {{currentQuestion.comments[key].author}}
+        </div>
+      </ng-template>
       <div class="card-body">
         {{currentQuestion.comments[key].text}}
       </div>
-      <div class="card-footer">
-        {{currentQuestion.comments[key].date | date:'HH:MM dd.MM.yyyy'}}
+      <div class="card-footer d-flex justify-content-between">
+        <div>
+          {{currentQuestion.comments[key].date | date:'HH:MM dd.MM.yyyy'}}
+        </div>
+        <div *ngIf="user.userEmail === currentQuestion.author">
+          <input type="checkbox" [checked]="currentQuestion.comments[key].right" (change)="toggleRight($event, key)">
+        </div>
       </div>
     </div>
   </div>

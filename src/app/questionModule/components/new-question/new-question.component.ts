@@ -43,9 +43,10 @@ export class NewQuestionComponent implements OnInit {
 
   submit() {
 
-    const selectedCategoryIds = this.form.value.category
+    const selectedCategoryIds: [] = this.form.value.category
       .map((checked, i) => checked ? this.categoryList[i].name : null)
       .filter(v => v !== null);
+
 
     const questionObject: Question = {
       title: this.form.value.title,
