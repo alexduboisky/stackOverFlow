@@ -14,16 +14,16 @@ export class AllQuestionsComponent implements OnInit {
   public questionsList = []
   public isLoading: boolean = false
 
-  userName: string
+  public userName: string
   categoryList = []
 
-  constructor(private auth: AuthService, private firebaseService: DatabaseService, private router: Router){
-    this.userName = auth.userEmail
+  constructor(public auth: AuthService, private firebaseService: DatabaseService, private router: Router){
   }
 
   ngOnInit(): void {
     this.getPostsList()
     this.categoryList = category.category
+    this.userName = this.auth.userEmail
   }
 
   getPostsList() {
@@ -35,6 +35,11 @@ export class AllQuestionsComponent implements OnInit {
 
   setCurrentQuestion(question) {
     this.router.navigate(['/viewQuestion',question.key])
+    this.firebaseService.currentQuestion = question
+  }
+
+  editQuestion(question) {
+    this.router.navigate(['/editQuestion',question.key])
     this.firebaseService.currentQuestion = question
   }
 }

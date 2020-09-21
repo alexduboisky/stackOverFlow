@@ -1,0 +1,50 @@
+<div class="container mt-4" *ngIf="isLoading; else preloader">
+  <form [formGroup]="form" class="mt-4">
+    <h2 class="text-center">Edit question</h2>
+    <hr>
+    <pre>{{currentQuestion | json}}</pre>
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input type="text" class="form-control form-control-lg" id="title"  placeholder="Title" formControlName="title">
+    </div>
+    <div *ngIf="form.get('title').invalid && form.get('title').touched">
+            <span  *ngIf="form.get('title').errors.required">
+              The field must not be empty
+            </span>
+    </div>
+    <div class="form-group">
+      <label for="text">Text</label>
+      <textarea class="form-control form-control-lg" id="text" placeholder="Enter text" formControlName="text">
+      </textarea>
+    </div>
+    <div *ngIf="form.get('text').invalid && form.get('text').touched">
+            <span  *ngIf="form.get('text').errors.required">
+              The field must not be empty
+            </span>
+    </div >
+    <div class="form-group d-flex">
+      <div class="mr-3"><label>Categories:</label></div>
+      <div class="d-flex flex-column">
+        <label formArrayName="category" *ngFor="let category of categoryFormArray.controls; let i = index">
+          <input type="checkbox" [formControlName]="i">
+          {{categoryList[i].name}}
+        </label>
+      </div>
+    </div>
+    <div *ngIf="!form.controls.category.valid">
+      <p>
+        At least one category must be selected
+      </p>
+    </div >
+    <hr>
+    <button type="submit" class="btn btn-primary btn-lg mr-1" [disabled]="!form.valid" (click)="submit()">Add</button>
+    <button type="button" class="btn btn-danger btn-lg">Cancel</button>
+  </form>
+</div>
+<ng-template #preloader>
+  <div class="d-flex justify-content-center mt-4">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</ng-template>

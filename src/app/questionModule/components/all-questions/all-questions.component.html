@@ -39,9 +39,15 @@
           <hr>
           <a class="card-link" href="#" *ngFor="let tag of question['category']">{{tag}}</a>
         </div>
-        <div class="card-footer">
-          <small class="text-muted">{{question.date | date:'dd.MM.yyy'}}</small>
+        <div class="card-footer text-muted text-monospace text-left" *ngIf="question.author != auth.userEmail; else editableQuestion">
+          <small>{{question.date | date:'dd.MM.yyy'}}</small>
         </div>
+        <ng-template #editableQuestion>
+          <div class="card-footer d-flex justify-content-between text-muted text-monospace align-items-center">
+            <small class="text-muted">{{question.date | date:'dd.MM.yyy'}}</small>
+            <a class="text-decoration-none " role="button"  (click)="editQuestion(question)">Edit</a>
+          </div>
+        </ng-template>
       </div>
     </div>
   </div>
