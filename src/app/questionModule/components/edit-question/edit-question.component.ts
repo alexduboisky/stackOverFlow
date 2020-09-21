@@ -28,11 +28,6 @@ export class EditQuestionComponent implements OnInit {
     currentRout.url.subscribe(route=>{
       this.dbPath = route[1].path
     })
-    if (!firebaseService.currentQuestion) {
-      this.getPost(`/questions/${this.dbPath}`)
-    } else {
-      this.setCurrentQuestion(firebaseService.currentQuestion)
-    }
   }
 
   setCurrentQuestion(question){
@@ -43,13 +38,18 @@ export class EditQuestionComponent implements OnInit {
 
   ngOnInit(): void {
     this.categoryList = category.category
+    if (!this.firebaseService.currentQuestion) {
+      this.getPost(`/questions/${this.dbPath}`)
+    } else {
+      this.setCurrentQuestion(this.firebaseService.currentQuestion)
+    }
   }
   createForm(){
     this.form = this.formBuilder.group(
       {title: new FormControl(this.currentQuestion.title,[
           Validators.required
         ]),
-        text: new FormControl(this.currentQuestion.title,[
+        text: new FormControl(this.currentQuestion.text,[
           Validators.required
         ]),
         category: new FormArray([], this.minSelectedCheckboxes(1))
@@ -58,7 +58,6 @@ export class EditQuestionComponent implements OnInit {
   }
 
   private addCheckboxes() {
-    console.log(this.currentQuestion.category)
     this.categoryList.forEach((checkbox) => {
       if (this.currentQuestion.category.indexOf(checkbox.name)>=0){
         this.categoryFormArray.push(new FormControl(true))
@@ -85,18 +84,21 @@ export class EditQuestionComponent implements OnInit {
       .map((checked, i) => checked ? this.categoryList[i].name : null)
       .filter(v => v !== null);
 
-
     const questionObject: Question = {
       title: this.form.value.title,
-      date: new Date().getTime().toString(),
+      date: this.currentQuestion.date,
       text: this.form.value.text,
       author: this.auth.userEmail,
       category: selectedCategoryIds
     }
-    this.firebaseService.createPost(questionObject)
-      .then(()=>this.router.navigate(['questions']))
+
+
+    this.firebaseService.updatePost(this.dbPath,questionObject)
+      .then(()=>{
+        this.router.navigate(['questions'])})
       .catch(error=> console.log(error))
 
+    this.currentQuestion = null
   }
 
   minSelectedCheckboxes(min = 1) {
@@ -108,6 +110,10 @@ export class EditQuestionComponent implements OnInit {
     };
 
     return validator;
+  }
+
+  cancel(){
+    this.router.navigate(['questions'])
   }
 
 }

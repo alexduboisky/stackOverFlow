@@ -71,4 +71,8 @@ export class NewQuestionComponent implements OnInit {
 
     return validator;
   }
+
+  cancel(){
+    this.router.navigate(['questions'])
+  }
 }

@@ -45,4 +45,8 @@ export class DatabaseService {
     return this.questionComment.push(comment)
   }
 
+  updatePost(key: string, value: object): Promise<void> {
+    return this.questionsRef.update(key, value);
+  }
+
 }

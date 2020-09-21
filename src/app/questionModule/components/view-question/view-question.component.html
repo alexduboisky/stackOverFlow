@@ -1,5 +1,6 @@
 
 <div class="container mt-4" *ngIf="isLoading; else preloader">
+  <div><a class="text-monospace btn btn-link text-decoration-none text-dark" (click)="backToAllQuestions()"><i class="fas fa-arrow-left"></i> Back</a></div>
   <div class="card">
     <div class="card-header d-flex justify-content-between bg-info text-white flex-wrap">
       <div>
@@ -19,7 +20,6 @@
       </a>
     </div>
   </div>
-  <pre>{{currentQuestion | json}}</pre>
   <div class="mt-4">
     <div class="card mt-2" *ngFor="let key of commentsKeys">
       <div class="card-header" *ngIf="!currentQuestion.comments[key].right; else rightAnswer">
