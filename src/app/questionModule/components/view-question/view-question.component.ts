@@ -14,7 +14,7 @@ import {AuthService} from '../../../shared/services/auth.service';
 export class ViewQuestionComponent implements OnInit {
 
   public currentQuestion: Question
-  public currentAnswer: any;
+  public currentAnswer: object;
   public isLoading: boolean = false
   form: FormGroup
   dbPath: string
@@ -68,7 +68,9 @@ export class ViewQuestionComponent implements OnInit {
       this.currentAnswer,
       `/questions/${this.dbPath}/comments`)
       .then(commentKey => {
-        this.currentQuestion.comments[commentKey.key] = this.currentAnswer
+        this.firebaseService.getPost(this.dbPath)
+        this.currentQuestion.comments[commentKey.key] = this.currentAnswer//сюда с бэка
+        this.getCommentsKeys(this.currentQuestion.comments)
       })
     this.form.reset()
   }
@@ -93,5 +95,11 @@ export class ViewQuestionComponent implements OnInit {
 
   toggleRight($event: Event, key: string) {
     this.currentQuestion.comments[key].right = $event.target['checked']
+    this.firebaseService.updateComment(`/questions/${this.dbPath}/comments`,key,{right: $event.target['checked']})
+  }
+
+  editQuestion(question) {
+    this.router.navigate([`/editQuestion/${this.dbPath}`])
+    this.firebaseService.currentQuestion = question
   }
 }

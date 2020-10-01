@@ -15,7 +15,7 @@ export class DatabaseService {
 
   questionsRef: AngularFireList<Question> = null;
   questionObj : AngularFireObject<Question> = null
-  questionComment: AngularFireList<object> = null
+  questionCommentObject: AngularFireList<object> = null
 
   constructor(private db: AngularFireDatabase) {
     this.questionsRef = db.list(this.dbPath)
@@ -41,12 +41,17 @@ export class DatabaseService {
   }
 
   addComment(comment: object, path: string){
-    this.questionComment = this.db.list(path)
-    return this.questionComment.push(comment)
+    this.questionCommentObject = this.db.list(path)
+    return this.questionCommentObject.push(comment)
   }
 
   updatePost(key: string, value: object): Promise<void> {
     return this.questionsRef.update(key, value);
+  }
+
+  updateComment(path: string, key: string, value: object): Promise<void>{
+    this.questionCommentObject = this.db.list(path)
+    return this.questionCommentObject.update(key, value)
   }
 
 }

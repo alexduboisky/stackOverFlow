@@ -27,6 +27,11 @@ export class EditQuestionComponent implements OnInit {
   constructor(private formBuilder: FormBuilder, private auth: AuthService, private firebaseService: DatabaseService, private router: Router, currentRout: ActivatedRoute) {
     currentRout.url.subscribe(route=>{
       this.dbPath = route[1].path
+      if (!this.firebaseService.currentQuestion) {
+        this.getPost(`/questions/${this.dbPath}`)
+      } else {
+        this.setCurrentQuestion(this.firebaseService.currentQuestion)
+      }
     })
   }
 
@@ -38,11 +43,6 @@ export class EditQuestionComponent implements OnInit {
 
   ngOnInit(): void {
     this.categoryList = category.category
-    if (!this.firebaseService.currentQuestion) {
-      this.getPost(`/questions/${this.dbPath}`)
-    } else {
-      this.setCurrentQuestion(this.firebaseService.currentQuestion)
-    }
   }
   createForm(){
     this.form = this.formBuilder.group(
@@ -94,11 +94,8 @@ export class EditQuestionComponent implements OnInit {
 
 
     this.firebaseService.updatePost(this.dbPath,questionObject)
-      .then(()=>{
-        this.router.navigate(['questions'])})
+      .then(()=> this.cancel())
       .catch(error=> console.log(error))
-
-    this.currentQuestion = null
   }
 
   minSelectedCheckboxes(min = 1) {
@@ -113,7 +110,8 @@ export class EditQuestionComponent implements OnInit {
   }
 
   cancel(){
-    this.router.navigate(['questions'])
+    this.currentQuestion = null
+    this.router.navigate([`/viewQuestion/${this.dbPath}`])
   }
 
 }

@@ -14,22 +14,22 @@
       <h5 class="card-title">{{currentQuestion.title}}</h5>
       <p class="card-text">{{currentQuestion.text}}</p>
     </div>
-    <div class="card-footer text-muted text-monospace">
-      <a *ngFor="let category of currentQuestion.category" href="#" class="text-decoration-none">
-        {{category}}
-      </a>
+    <div class="card-footer text-muted text-monospace d-flex justify-content-between">
+      <div>
+        <a *ngFor="let category of currentQuestion.category" href="#" class="text-decoration-none">
+          {{category}}
+        </a>
+      </div>
+      <div *ngIf="user.userEmail === currentQuestion.author">
+        <a class="text-decoration-none " role="button"  (click)="editQuestion(currentQuestion)">Edit</a>
+      </div>
     </div>
   </div>
   <div class="mt-4">
     <div class="card mt-2" *ngFor="let key of commentsKeys">
-      <div class="card-header" *ngIf="!currentQuestion.comments[key].right; else rightAnswer">
+      <div class="card-header" [ngClass]="{'bg-success':currentQuestion.comments[key].right}"> <!-- перенести edit коммент не инпут а текстареа поправить саксес посмотреть тип в эдит-->
         {{currentQuestion.comments[key].author}}
       </div>
-      <ng-template #rightAnswer>
-        <div class="card-header bg-success">
-          {{currentQuestion.comments[key].author}}
-        </div>
-      </ng-template>
       <div class="card-body">
         {{currentQuestion.comments[key].text}}
       </div>
@@ -49,7 +49,7 @@
       <form [formGroup]="form">
         <div class="form-row">
           <div class="col-lg-12">
-            <input type="text" class="form-control" placeholder="Your answer" formControlName="comment">
+            <textarea type="text" class="form-control" placeholder="Your answer" formControlName="comment"></textarea>
           </div>
         </div>
         <div class="form-row mt-2">

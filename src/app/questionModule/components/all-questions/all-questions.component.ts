@@ -28,7 +28,7 @@ export class AllQuestionsComponent implements OnInit {
 
   getPostsList() {
     this.firebaseService.getPostsList().subscribe(questions => {
-      this.questionsList = questions;
+      this.questionsList = questions; //через map
       this.isLoading = true
     });
   }
@@ -38,8 +38,4 @@ export class AllQuestionsComponent implements OnInit {
     this.firebaseService.currentQuestion = question
   }
 
-  editQuestion(question) {
-    this.router.navigate(['/editQuestion',question.key])
-    this.firebaseService.currentQuestion = question
-  }
 }
