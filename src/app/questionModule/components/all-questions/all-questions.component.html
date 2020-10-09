@@ -1,45 +1,51 @@
-<div class="container mt-2">
+<div class="container mt-2" [ngClass]="{'dark-theme': theme.theme.value == 'dark'}" *ngIf="isLoading; else preloader">
   <ul class="nav nav-pills justify-content-between">
     <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Filters</a>
+      <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Filters</a>
       <div class="dropdown-menu">
-        <a class="dropdown-item" href="#">Unanswered</a>
-        <a class="dropdown-item" href="#">Solved</a>
+        <a class="dropdown-item" role="button" (click)="filterForAllTime()">All</a>
+        <a class="dropdown-item" role="button" (click)="selectSolved(false)">Unanswered</a>
+        <a class="dropdown-item" role="button" (click)="selectSolved(true)">Solved</a>
         <div class="dropdown-divider"></div>
-        <a *ngFor="let item of categoryList" class="dropdown-item" href="#">{{item.name}}</a>
+          <div class="d-flex flex-column"  >
+            <label class="dropdown-item" *ngFor="let item of categoryList" for="{{item.name}}">
+              <input type="checkbox"  id="{{item.name}}" value="{{item.name}}" (change)="filterByCategory($event)">
+              {{item.name}}
+            </label>
+          </div>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="#">For the day</a>
-        <a class="dropdown-item" href="#">For the week</a>
-        <a class="dropdown-item" href="#">For the month</a>
-        <a class="dropdown-item" href="#">For all time</a>
+        <a class="dropdown-item" role="button" (click)="filterForADay()">For the day</a>
+        <a class="dropdown-item" role="button" (click)="filterForAWeek()">For the week</a>
+        <a class="dropdown-item" role="button" (click)="filterForAMonth()">For the month</a>
+        <a class="dropdown-item" role="button" (click)="filterForAllTime()">For all time</a>
       </div>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#">Sort</a>
+      <a class="nav-link" role="button" (click)="sort()">Sort </a>
     </li>
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Settings</a>
       <div class="dropdown-menu">
-        <a class="dropdown-item" href="#">Tiled</a>
-        <a class="dropdown-item" href="#">Linear</a>
+        <a class="dropdown-item" role="button" (click)="changeMarkUpView('tiled')">Tiled</a>
+        <a class="dropdown-item" role="button" (click)="changeMarkUpView('linear')">Linear</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item disabled" href="#">Color theme:</a>
-        <a class="dropdown-item" href="#">Dark</a>
-        <a class="dropdown-item" href="#">Light</a>
+        <a class="dropdown-item" role="button" (click)="theme.theme.next('dark')">Dark</a>
+        <a class="dropdown-item" role="button" (click)="theme.theme.next('light')">Light</a>
       </div>
     </li>
   </ul>
-  <div class="row  row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3" *ngIf="isLoading; else preloader">
-    <div *ngFor="let question of questionsList" class="col mb-4">
+  <div class="row  row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3"  *ngIf="isLinear === false; else linear">
+    <div *ngFor="let question of filteredList" class="col mb-4">
       <div  class="card text-center d-flex ">
         <div class="card-body">
           <a class="text-dark text-decoration-none" role="button" (click)="setCurrentQuestion(question)">
             <h5 class="card-title">{{question.title}}</h5>
           </a>
           <hr>
-          <a class="card-link" href="#" *ngFor="let tag of question['category']">{{tag}}</a>
+          <a class="card-link" role="button" (click)="filterByCategory(undefined, tag)" *ngFor="let tag of question['category']">{{tag}}</a>
         </div>
-        <div class="card-footer text-muted text-monospace text-left">
+        <div class="card-footer text-muted text-monospace text-center">
           <small>{{question.date | date:'dd.MM.yyy'}}</small>
         </div>
       </div>
@@ -47,9 +53,32 @@
   </div>
 </div>
 <ng-template #preloader>
-  <div class="d-flex justify-content-center">
+  <div class="d-flex justify-content-center mt-2">
     <div class="spinner-border" role="status">
       <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</ng-template>
+<ng-template #linear>
+  <div class="d-flex flex-column">
+    <div *ngFor="let question of filteredList" class="col mb-4">
+      <div  class="card  d-flex ">
+        <div class="card-body">
+          <a class="text-dark text-decoration-none" role="button" (click)="setCurrentQuestion(question)">
+            <h5 class="card-title">{{question.title}}</h5>
+          </a>
+          <hr>
+          <div>
+            <a class="card-link" role="button" (click)="filterByCategory(undefined, tag)"  *ngFor="let tag of question['category']">{{tag}}</a>
+          </div>
+        </div>
+        <div class="card-footer text-muted text-monospace justify-content-between d-flex">
+          <div>
+            {{question.author}}
+          </div>
+          <small>{{question.date | date:'dd.MM.yyy'}}</small>
+        </div>
+      </div>
     </div>
   </div>
 </ng-template>

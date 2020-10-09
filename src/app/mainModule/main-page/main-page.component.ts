@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {User} from 'firebase';
 import {AuthService} from '../../shared/services/auth.service';
 import {Router} from '@angular/router';
+import {ThemeService} from '../../shared/services/theme.service';
 
 @Component({
   selector: 'app-main-page',
@@ -13,11 +14,12 @@ export class MainPageComponent {
   public isAuth: boolean
   public user: User
 
-  constructor(private auth: AuthService, private router: Router) {
+  constructor(private auth: AuthService, private router: Router, public theme: ThemeService) {
     auth.user.subscribe((user)=>{
       this.user = user
       this.isAuth = user != null;
     })
+    theme.theme.subscribe()
   }
 
 

@@ -96,6 +96,7 @@ export class ViewQuestionComponent implements OnInit {
   toggleRight($event: Event, key: string) {
     this.currentQuestion.comments[key].right = $event.target['checked']
     this.firebaseService.updateComment(`/questions/${this.dbPath}/comments`,key,{right: $event.target['checked']})
+    this.firebaseService.updatePost(this.dbPath,{solved:`${$event.target['checked']}`})
   }
 
   editQuestion(question) {

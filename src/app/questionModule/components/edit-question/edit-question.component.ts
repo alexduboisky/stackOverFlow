@@ -89,7 +89,9 @@ export class EditQuestionComponent implements OnInit {
       date: this.currentQuestion.date,
       text: this.form.value.text,
       author: this.auth.userEmail,
-      category: selectedCategoryIds
+      category: selectedCategoryIds,
+      comments: this.currentQuestion.comments,
+      solved: this.currentQuestion.solved
     }
 
 

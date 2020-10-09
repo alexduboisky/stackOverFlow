@@ -1,1 +1,34 @@
+body {
+  height: 100vh;
+}
+.dark-theme{
+  background-color: #181818 !important;
+  color: white;
+  .card, form{
+    background-color: #343A40 !important;
+  }
+  .text-dark{
+    color: white!important;
+  }
+  .dropdown-menu{
+    background: #343A40 !important;
+  }
+  .dropdown-item{
+    color: white!important;
+  }
+  .dropdown-item:hover{
+    background: #057BFF !important;
+  }
+  .question{
+    border: #343A40 1px solid;
+    padding: 30px;
+    border-radius: 30px;
+  }
+  a:hover{
+    color: white !important;
+  }
+}
+.wrapper{
+  min-height: 100vh;
+}
 

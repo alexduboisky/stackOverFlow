@@ -19,6 +19,12 @@ import { MainPageComponent } from './mainModule/main-page/main-page.component';
 import {DatabaseService} from './shared/services/database.service';
 import { ViewQuestionComponent } from './questionModule/components/view-question/view-question.component';
 import { EditQuestionComponent } from './questionModule/components/edit-question/edit-question.component';
+import { SortByDatePipe } from './shared/pipes/sortByDate.pipe';
+import { FilterForADayPipe } from './shared/pipes/filter-for-aday.pipe';
+import { FilterForAWeekPipe } from './shared/pipes/filter-for-aweek.pipe';
+import { FilterForAMonthPipe } from './shared/pipes/filter-for-amonth.pipe';
+import { SolvedQuestionsPipe } from './shared/pipes/solved-questions.pipe';
+import { FilterByCategoryPipe } from './shared/pipes/filter-by-category.pipe';
 
 
 @NgModule({
@@ -30,7 +36,13 @@ import { EditQuestionComponent } from './questionModule/components/edit-question
     NewQuestionComponent,
     MainPageComponent,
     ViewQuestionComponent,
-    EditQuestionComponent
+    EditQuestionComponent,
+    SortByDatePipe,
+    FilterForADayPipe,
+    FilterForAWeekPipe,
+    FilterForAMonthPipe,
+    SolvedQuestionsPipe,
+    FilterByCategoryPipe
   ],
   imports: [
     BrowserModule,
