@@ -38,28 +38,29 @@ export class EditQuestionComponent implements OnInit {
   setCurrentQuestion(question){
     this.currentQuestion = question
     this.isLoading = true
-    this.createForm();
+    this.createForm(this.currentQuestion);
   }
 
   ngOnInit(): void {
-    this.categoryList = category.category
   }
-  createForm(){
+
+  createForm(question){
+    this.categoryList = category.category
     this.form = this.formBuilder.group(
-      {title: new FormControl(this.currentQuestion.title,[
+      {title: new FormControl(question.title,[
           Validators.required
         ]),
-        text: new FormControl(this.currentQuestion.text,[
+        text: new FormControl(question.text,[
           Validators.required
         ]),
         category: new FormArray([], this.minSelectedCheckboxes(1))
       })
-    this.addCheckboxes();
+    this.addCheckboxes(question);
   }
 
-  private addCheckboxes() {
+  private addCheckboxes(question) {
     this.categoryList.forEach((checkbox) => {
-      if (this.currentQuestion.category.indexOf(checkbox.name)>=0){
+      if (question.category.indexOf(checkbox.name)>=0){
         this.categoryFormArray.push(new FormControl(true))
       }
       else {
