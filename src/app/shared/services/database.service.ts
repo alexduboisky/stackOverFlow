@@ -11,14 +11,17 @@ import {Observable} from 'rxjs';
 export class DatabaseService {
 
   private dbPath = '/questions'
+  private adminsPath = '/admins'
   public currentQuestion: Question;
 
   questionsRef: AngularFireList<Question> = null;
   questionObj : AngularFireObject<Question> = null
   questionCommentObject: AngularFireList<object> = null
+  adminsRef: AngularFireObject<any> = null;
 
   constructor(private db: AngularFireDatabase) {
     this.questionsRef = db.list(this.dbPath)
+    this.adminsRef = db.object(this.adminsPath)
   }
 
   createPost(question: Question): firebase.database.ThenableReference{
@@ -52,6 +55,10 @@ export class DatabaseService {
   updateComment(path: string, key: string, value: object): Promise<void>{
     this.questionCommentObject = this.db.list(path)
     return this.questionCommentObject.update(key, value)
+  }
+
+  getAdmins(): AngularFireObject<any>{
+    return this.adminsRef
   }
 
 }

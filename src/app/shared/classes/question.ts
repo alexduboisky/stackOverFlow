@@ -6,7 +6,8 @@ export class Question{
   date: string;
   text: string;
   category: object[];
-  solved: boolean
+  solved: boolean;
+  approved: boolean
 
   constructor(obj) {
     this.key = obj.key;
@@ -17,5 +18,6 @@ export class Question{
     this.text = obj.text;
     this.category = obj.category;
     this.solved = obj.solved || false;
+    this.approved = obj.approved
   }
 }

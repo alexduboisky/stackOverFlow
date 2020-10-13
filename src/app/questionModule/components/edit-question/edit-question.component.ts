@@ -91,7 +91,8 @@ export class EditQuestionComponent implements OnInit {
       author: this.auth.userEmail,
       category: selectedCategoryIds,
       comments: this.currentQuestion.comments,
-      solved: this.currentQuestion.solved
+      solved: this.currentQuestion.solved,
+      approved: this.currentQuestion.approved
     }
 
 

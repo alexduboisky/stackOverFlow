@@ -25,6 +25,8 @@ export class AllQuestionsComponent implements OnInit {
   public isSorted: boolean = false
   public selectedCategory = []
   public isLinear: boolean = false
+  public adminList: string[] = []
+  public isAdmin: boolean = false
 
   public userName: string
   categoryList = []
@@ -38,15 +40,34 @@ export class AllQuestionsComponent implements OnInit {
   ngOnInit(): void {
     this.getPostsList()
     this.categoryList = category.category
-    this.userName = this.auth.userEmail
   }
 
   getPostsList() {
     this.firebaseService.getPostsList().subscribe(questions => {
-      this.questionsList = questions.map(item => new Question(item))
-      this.filteredList = this.questionsList
-      this.isLoading = true
+      this.firebaseService.getAdmins().valueChanges().subscribe(admins=> {
+        this.userName = this.auth.userEmail
+        this.adminList = admins;
+        this.checkIsAdmin(this.adminList, this.userName)
+        questions.forEach(item => {
+          if (this.isAdmin){
+            this.questionsList.push(new Question(item))
+          }
+          else {
+            if (item.approved === true) this.questionsList.push(new Question(item))
+          }
+        })
+        this.filteredList = this.questionsList
+        this.isLoading = true
+      })
     });
+  }
+
+  checkIsAdmin(adminList: string[], currentUser: string){
+    adminList.forEach(admin=>{
+      if(admin === currentUser){
+        this.isAdmin = true
+      }
+    })
   }
 
   setCurrentQuestion(question) {
@@ -101,5 +122,14 @@ export class AllQuestionsComponent implements OnInit {
 
   changeMarkUpView(type: string) {
     this.isLinear = type === 'linear';
+  }
+
+  approveQuestion(key: string){
+    this.firebaseService.updatePost(key, {'approve': true}).then(()=>{
+      this.questionsList.map(question=>{
+        if (question.key === key) question.approved = true
+      })
+      this.filteredList = this.questionsList
+    })
   }
 }

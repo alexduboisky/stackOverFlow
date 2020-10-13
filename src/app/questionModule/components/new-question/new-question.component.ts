@@ -56,7 +56,8 @@ export class NewQuestionComponent implements OnInit {
       author: this.auth.userEmail,
       category: selectedCategoryIds,
       solved: false,
-      comments: []
+      comments: [],
+      approved: false
     }
     this.database.createPost(questionObject)
       .then(()=>this.router.navigate(['questions']))
