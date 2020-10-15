@@ -21,7 +21,7 @@ export class NewQuestionComponent implements OnInit {
     return this.form.controls.category as FormArray;
   }
 
-  constructor(private formBuilder: FormBuilder, private auth: AuthService, private database: DatabaseService, private router: Router) {
+  constructor(private formBuilder: FormBuilder, private authService: AuthService, private databaseService: DatabaseService, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -53,13 +53,13 @@ export class NewQuestionComponent implements OnInit {
       title: this.form.value.title,
       date: new Date().getTime().toString(),
       text: this.form.value.text,
-      author: this.auth.userEmail,
+      author: this.authService.userEmail,
       category: selectedCategoryIds,
       solved: false,
       comments: [],
       approved: false
     }
-    this.database.createPost(questionObject)
+    this.databaseService.createPost(questionObject)
       .then(()=>this.router.navigate(['questions']))
       .catch(error=> console.log(error))
 

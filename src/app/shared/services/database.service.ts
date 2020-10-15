@@ -4,6 +4,7 @@ import {Question} from '../classes/question';
 import * as firebase from 'firebase';
 import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
+import {AuthService} from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +20,13 @@ export class DatabaseService {
   questionCommentObject: AngularFireList<object> = null
   adminsRef: AngularFireObject<any> = null;
 
-  constructor(private db: AngularFireDatabase) {
+  public isAdmin: boolean = false
+  public adminList: string[] = []
+
+  constructor(private db: AngularFireDatabase, public authService: AuthService) {
     this.questionsRef = db.list(this.dbPath)
     this.adminsRef = db.object(this.adminsPath)
+    this.getAdmins()
   }
 
   createPost(question: Question): firebase.database.ThenableReference{
@@ -57,8 +62,22 @@ export class DatabaseService {
     return this.questionCommentObject.update(key, value)
   }
 
-  getAdmins(): AngularFireObject<any>{
-    return this.adminsRef
+  deletePost(key: string): Promise<void>{
+    return this.questionsRef.remove(key)
+  }
+
+  getAdmins(){
+    this.adminsRef.valueChanges().subscribe(admins => {
+      this.adminList = admins;
+      this.checkIsAdmin(this.adminList, this.authService.userEmail)
+  })}
+
+  checkIsAdmin(adminList: string[], currentUser: string) {
+    adminList.forEach(admin => {
+      if (admin === currentUser) {
+        this.isAdmin = true
+      }
+    })
   }
 
 }

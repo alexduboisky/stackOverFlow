@@ -20,7 +20,7 @@ export class ViewQuestionComponent implements OnInit {
   dbPath: string
   commentsKeys: string[] = []
 
-  constructor(private firebaseService: DatabaseService, private router: Router, public user: AuthService, currentRout: ActivatedRoute) {
+  constructor(public firebaseService: DatabaseService, private router: Router, public authService: AuthService, currentRout: ActivatedRoute) {
     currentRout.url.subscribe(route=>{
       this.dbPath = route[1].path
     })
@@ -59,7 +59,7 @@ export class ViewQuestionComponent implements OnInit {
 
   addAnswer() {
     this.currentAnswer = {
-      author:this.user.userEmail,
+      author:this.authService.userEmail,
       date: new Date().getTime(),
       text:this.form.controls.comment.value,
       right: false
@@ -96,11 +96,17 @@ export class ViewQuestionComponent implements OnInit {
   toggleRight($event: Event, key: string) {
     this.currentQuestion.comments[key].right = $event.target['checked']
     this.firebaseService.updateComment(`/questions/${this.dbPath}/comments`,key,{right: $event.target['checked']})
-    this.firebaseService.updatePost(this.dbPath,{solved:`${$event.target['checked']}`})
+    this.firebaseService.updatePost(this.dbPath,{solved: $event.target['checked']})
   }
 
   editQuestion(question) {
     this.router.navigate([`/editQuestion/${this.dbPath}`])
     this.firebaseService.currentQuestion = question
+  }
+
+  approveQuestion(key: string) {
+    this.firebaseService.updatePost(key, {'approved': true}).then(() => {
+      this.currentQuestion.approved = true
+    })
   }
 }

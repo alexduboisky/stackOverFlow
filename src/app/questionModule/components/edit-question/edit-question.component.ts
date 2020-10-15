@@ -24,13 +24,13 @@ export class EditQuestionComponent implements OnInit {
     return this.form.controls.category as FormArray;
   }
 
-  constructor(private formBuilder: FormBuilder, private auth: AuthService, private firebaseService: DatabaseService, private router: Router, currentRout: ActivatedRoute) {
+  constructor(private formBuilder: FormBuilder, private authService: AuthService, private databaseService: DatabaseService, private router: Router, currentRout: ActivatedRoute) {
     currentRout.url.subscribe(route=>{
       this.dbPath = route[1].path
-      if (!this.firebaseService.currentQuestion) {
+      if (!this.databaseService.currentQuestion) {
         this.getPost(`/questions/${this.dbPath}`)
       } else {
-        this.setCurrentQuestion(this.firebaseService.currentQuestion)
+        this.setCurrentQuestion(this.databaseService.currentQuestion)
       }
     })
   }
@@ -71,7 +71,7 @@ export class EditQuestionComponent implements OnInit {
 
 
   getPost(path){
-    this.firebaseService.getPost(path).valueChanges()
+    this.databaseService.getPost(path).valueChanges()
       .subscribe(question=>
       {
         this.setCurrentQuestion(question)
@@ -89,7 +89,7 @@ export class EditQuestionComponent implements OnInit {
       title: this.form.value.title,
       date: this.currentQuestion.date,
       text: this.form.value.text,
-      author: this.auth.userEmail,
+      author: this.authService.userEmail,
       category: selectedCategoryIds,
       comments: this.currentQuestion.comments,
       solved: this.currentQuestion.solved,
@@ -97,7 +97,7 @@ export class EditQuestionComponent implements OnInit {
     }
 
 
-    this.firebaseService.updatePost(this.dbPath,questionObject)
+    this.databaseService.updatePost(this.dbPath,questionObject)
       .then(()=> this.cancel())
       .catch(error=> console.log(error))
   }

@@ -1,23 +1,58 @@
-<div class="container mt-2" [ngClass]="{'dark-theme': theme.theme.value == 'dark'}" *ngIf="isLoading; else preloader">
+<div class="container {{themeService.theme.value}} mt-2" *ngIf="isLoading; else preloader">
   <ul class="nav nav-pills justify-content-between">
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Filters</a>
       <div class="dropdown-menu">
-        <a class="dropdown-item" role="button" (click)="filterForAllTime()">All</a>
-        <a class="dropdown-item" role="button" (click)="selectSolved(false)">Unanswered</a>
-        <a class="dropdown-item" role="button" (click)="selectSolved(true)">Solved</a>
+        <div [formGroup]="formForQuestion" class="d-flex flex-column">
+          <label class="dropdown-item">
+            <input type="radio" checked formControlName="questions" value="all" (click)="selectQuestions('all')">
+            All
+          </label>
+          <label class="dropdown-item">
+            <input type="radio" formControlName="questions" value="unanswered" (click)="selectQuestions('unanswered')">
+            Unanswered
+          </label>
+          <label class="dropdown-item">
+            <input type="radio" formControlName="questions" value="solved" (click)="selectQuestions('solved')">
+            Solved
+          </label>
+          <label *ngIf="firebaseService.isAdmin" class="dropdown-item">
+            <input type="radio" formControlName="questions" value="toApprove" (click)="selectQuestions('toApprove')">
+            To Approve
+          </label>
+          <label *ngIf="!firebaseService.isAdmin" class="dropdown-item">
+            <input type="radio" formControlName="questions" value="myQuestions" (click)="selectQuestions(userName,userName)">
+            My Questions
+          </label>
+        </div>
         <div class="dropdown-divider"></div>
-          <div class="d-flex flex-column"  >
-            <label class="dropdown-item" *ngFor="let item of categoryList" for="{{item.name}}">
-              <input type="checkbox"  id="{{item.name}}" value="{{item.name}}" (change)="filterByCategory($event)">
-              {{item.name}}
+          <div [formGroup]="formForCategories" class="d-flex flex-column"  >
+            <label formArrayName="category" class="dropdown-item" *ngFor="let item of categoryFormArray.controls; let i = index">
+              <input type="checkbox" formControlName="{{i}}" [name]="categoryList[i].name" (change)="filterByCategory($event)">
+              {{categoryList[i].name}}
             </label>
           </div>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" role="button" (click)="filterForADay()">For the day</a>
-        <a class="dropdown-item" role="button" (click)="filterForAWeek()">For the week</a>
-        <a class="dropdown-item" role="button" (click)="filterForAMonth()">For the month</a>
-        <a class="dropdown-item" role="button" (click)="filterForAllTime()">For all time</a>
+        <div [formGroup]="formForTime" class="d-flex flex-column">
+          <label class="dropdown-item">
+            <input type="radio"  formControlName="time" value="forTheDay" (click)="filterForATime(1)">
+            For the day
+          </label>
+          <label class="dropdown-item">
+            <input type="radio" formControlName="time" value="forTheWeek" (click)="filterForATime(7)">
+            For the week
+          </label>
+          <label class="dropdown-item">
+            <input type="radio" formControlName="time" value="forTheMonth" (click)="filterForATime(30)">
+            For the month
+          </label>
+          <label class="dropdown-item">
+            <input type="radio" formControlName="time" value="forTheAllTime" (click)="selectQuestions('solved')">
+            For all time
+          </label>
+        </div>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" role="button" (click)="clearAllFilters()"><i class="fas fa-times"></i> Clear All</a>
       </div>
     </li>
     <li class="nav-item">
@@ -30,14 +65,13 @@
         <a class="dropdown-item" role="button" (click)="changeMarkUpView('linear')">Linear</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item disabled" href="#">Color theme:</a>
-        <a class="dropdown-item" role="button" (click)="theme.theme.next('dark')">Dark</a>
-        <a class="dropdown-item" role="button" (click)="theme.theme.next('light')">Light</a>
+        <a class="dropdown-item" role="button" *ngFor="let theme of themesList" (click)="changeTheme(theme.name)">{{theme.name}}</a>
       </div>
     </li>
   </ul>
   <div class="row  row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3"  *ngIf="isLinear === false; else linear">
-    <div *ngFor="let question of filteredList" class="col mb-4">
-      <div  class="card text-center d-flex" *ngIf="question.approved === true; else adminTiled">
+    <div *ngFor="let question of filteredList | filterByCategory: selectedCategory | filterForATime: timeForFilter" class="col mb-4">
+      <div  class="card text-center d-flex" >
         <div class="card-body">
           <a class="text-dark text-decoration-none" role="button" (click)="setCurrentQuestion(question)">
             <h5 class="card-title">{{question.title}}</h5>
@@ -49,23 +83,21 @@
           <small>{{question.date | date:'dd.MM.yyy'}}</small>
         </div>
       </div>
-      <ng-template #adminTiled>
-        <div class="card text-center d-flex ">
-          <div class="card-body">
-            <a class="text-dark text-decoration-none" role="button" (click)="setCurrentQuestion(question)">
-              <h5 class="card-title">{{question.title}}</h5>
-            </a>
-            <hr>
-              <button role="button" class="btn btn-success"  (click)="approveQuestion(question.key)">Approve</button>
-            <hr>
-            <a class="card-link" role="button" (click)="filterByCategory(undefined, tag)" *ngFor="let tag of question['category']">{{tag}}</a>
-          </div>
-          <div class="card-footer text-muted text-monospace text-center">
-            <small>{{question.date | date:'dd.MM.yyy'}}</small>
-          </div>
-        </div>
+<!--      <ng-template #adminTiled>-->
+<!--        <div class="card text-center d-flex ">-->
+<!--          <div class="card-body">-->
+<!--            <a class="text-dark text-decoration-none" role="button" (click)="setCurrentQuestion(question)">-->
+<!--              <h5 class="card-title">{{question.title}}</h5>-->
+<!--            </a>-->
+<!--            <hr>-->
+<!--            <a class="card-link" role="button" (click)="filterByCategory(undefined, tag)" *ngFor="let tag of question['category']">{{tag}}</a>-->
+<!--          </div>-->
+<!--          <div class="card-footer text-muted text-monospace text-center">-->
+<!--            <small>{{question.date | date:'dd.MM.yyy'}}</small>-->
+<!--          </div>-->
+<!--        </div>-->
 
-      </ng-template>
+<!--      </ng-template>-->
     </div>
   </div>
 </div>
@@ -79,7 +111,7 @@
 <ng-template #linear>
   <div class="d-flex flex-column">
     <div *ngFor="let question of filteredList" class="col mb-4">
-      <div  class="card  d-flex " *ngIf="question.approved === true; else adminLinear">
+      <div  class="card  d-flex ">
         <div class="card-body">
           <a class="text-dark text-decoration-none" role="button" (click)="setCurrentQuestion(question)">
             <h5 class="card-title">{{question.title}}</h5>
@@ -96,26 +128,23 @@
           <small>{{question.date | date:'dd.MM.yyy'}}</small>
         </div>
       </div>
-      <ng-template #adminLinear>
-        <div class="card  d-flex ">
-          <div class="card-body">
-            <a class="text-dark text-decoration-none" role="button" (click)="setCurrentQuestion(question)">
-              <h5 class="card-title">{{question.title}}</h5>
-            </a>
-            <hr>
-            <button role="button" class="btn btn-success" (click)="approveQuestion(question.key)">Approve</button><hr>
-            <div>
-              <a class="card-link" role="button" (click)="filterByCategory(undefined, tag)"  *ngFor="let tag of question['category']">{{tag}}</a>
-            </div>
-          </div>
-          <div class="card-footer text-muted text-monospace justify-content-between d-flex">
-            <div>
-              {{question.author}}
-            </div>
-            <small>{{question.date | date:'dd.MM.yyy'}}</small>
-          </div>
-        </div>
-      </ng-template>
+<!--      <ng-template #adminLinear>-->
+<!--        <div class="card  d-flex ">-->
+<!--          <div class="card-body">-->
+<!--            <a class="text-dark text-decoration-none" role="button" (click)="setCurrentQuestion(question)">-->
+<!--              <h5 class="card-title">{{question.title}}</h5>-->
+<!--            </a>-->
+<!--            <hr>-->
+<!--              <a class="card-link" role="button" (click)="filterByCategory(undefined, tag)"  *ngFor="let tag of question['category']">{{tag}}</a>-->
+<!--          </div>-->
+<!--          <div class="card-footer text-muted text-monospace justify-content-between d-flex">-->
+<!--            <div>-->
+<!--              {{question.author}}-->
+<!--            </div>-->
+<!--            <small>{{question.date | date:'dd.MM.yyy'}}</small>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </ng-template>-->
     </div>
   </div>
 </ng-template>

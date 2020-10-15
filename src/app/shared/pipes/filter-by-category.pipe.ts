@@ -5,14 +5,16 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class FilterByCategoryPipe implements PipeTransform {
 
-  transform(list: any, selectedCategory: any ): any {
-    let filteredList = []
-     list.forEach(question=>{
-      selectedCategory.forEach(category=> {
-        if (question.category.includes(category)) filteredList.push(question)
-      })
+  transform(list: any, selectedCategory: string[] = [] ): any {
+
+    if (selectedCategory.length === 0){
+      return list
+    }
+
+    return list.filter(q => {
+      let res = q.category.filter(category => selectedCategory.includes(category));
+      return res.length > 0 ? q : null;
     })
-    return filteredList
   }
 
 }

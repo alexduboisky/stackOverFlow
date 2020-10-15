@@ -1,0 +1,12 @@
+{
+  "themes": [
+    {
+      "id": 1,
+      "name": "Dark"
+    },
+    {
+      "id": 2,
+      "name": "Light"
+    }
+  ]
+}

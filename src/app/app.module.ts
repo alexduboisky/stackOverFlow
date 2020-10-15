@@ -23,8 +23,9 @@ import { SortByDatePipe } from './shared/pipes/sortByDate.pipe';
 import { FilterForADayPipe } from './shared/pipes/filter-for-aday.pipe';
 import { FilterForAWeekPipe } from './shared/pipes/filter-for-aweek.pipe';
 import { FilterForAMonthPipe } from './shared/pipes/filter-for-amonth.pipe';
-import { SolvedQuestionsPipe } from './shared/pipes/solved-questions.pipe';
+import { SelectQuestionsPipe } from './shared/pipes/select-questions.pipe';
 import { FilterByCategoryPipe } from './shared/pipes/filter-by-category.pipe';
+import { FilterForATimePipe } from './shared/pipes/filter-for-atime.pipe';
 
 
 @NgModule({
@@ -41,8 +42,9 @@ import { FilterByCategoryPipe } from './shared/pipes/filter-by-category.pipe';
     FilterForADayPipe,
     FilterForAWeekPipe,
     FilterForAMonthPipe,
-    SolvedQuestionsPipe,
-    FilterByCategoryPipe
+    SelectQuestionsPipe,
+    FilterByCategoryPipe,
+    FilterForATimePipe
   ],
   imports: [
     BrowserModule,

@@ -5,6 +5,6 @@ import {BehaviorSubject} from 'rxjs';
   providedIn: 'root'
 })
 export class ThemeService {
-  theme = new BehaviorSubject<string>('light')
+  theme = new BehaviorSubject<string>('Light')
 }
 

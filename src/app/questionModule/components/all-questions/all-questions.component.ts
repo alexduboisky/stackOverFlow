@@ -1,16 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthService} from '../../../shared/services/auth.service';
 import * as category from '../../../../assets/data/category.json';
+import * as themes from '../../../../assets/data/themes.json'
 import {DatabaseService} from '../../../shared/services/database.service';
 import {Router} from '@angular/router';
 import {SortByDatePipe} from '../../../shared/pipes/sortByDate.pipe';
-import {FilterForADayPipe} from '../../../shared/pipes/filter-for-aday.pipe';
-import {FilterForAWeekPipe} from '../../../shared/pipes/filter-for-aweek.pipe';
-import {FilterForAMonthPipe} from '../../../shared/pipes/filter-for-amonth.pipe';
-import {SolvedQuestionsPipe} from '../../../shared/pipes/solved-questions.pipe';
+import {SelectQuestionsPipe} from '../../../shared/pipes/select-questions.pipe';
 import {Question} from '../../../shared/classes/question';
-import {FilterByCategoryPipe} from '../../../shared/pipes/filter-by-category.pipe';
 import {ThemeService} from '../../../shared/services/theme.service';
+import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-all-questions',
@@ -26,52 +24,68 @@ export class AllQuestionsComponent implements OnInit {
   public selectedCategory = []
   public isLinear: boolean = false
   public adminList: string[] = []
-  public isAdmin: boolean = false
+  //public isAdmin: boolean = false
+  public timeForFilter: number = null
 
   public userName: string
-  categoryList = []
+  public categoryList: object[] = []
+  public themesList: object[] = []
+  public formForCategories: FormGroup
+  public formForQuestion: FormGroup
+  public formForTime: FormGroup
 
 
-
-  constructor(public auth: AuthService, private firebaseService: DatabaseService, private router: Router, public theme: ThemeService){
-    theme.theme.subscribe()
+  constructor(public authService: AuthService, public firebaseService: DatabaseService, private router: Router, public themeService: ThemeService, private formBuilder: FormBuilder) {
+    themeService.theme.subscribe()
   }
 
   ngOnInit(): void {
+    this.formForCategories = this.formBuilder.group({
+      category: new FormArray([])
+    })
+    this.formForQuestion = this.formBuilder.group({
+      questions: [new FormControl(''),
+                  new FormControl(''),
+                  new FormControl(''),
+                  new FormControl('')]
+    })
+    this.formForTime = this.formBuilder.group({
+      time: [new FormControl(false),
+        new FormControl(false),
+        new FormControl(false),
+        new FormControl(true)]
+    })
     this.getPostsList()
     this.categoryList = category.category
+    this.themesList = themes.themes
+    this.categoryList.forEach(category => this.categoryFormArray.push(new FormControl(false)))
   }
+
 
   getPostsList() {
     this.firebaseService.getPostsList().subscribe(questions => {
-      this.firebaseService.getAdmins().valueChanges().subscribe(admins=> {
-        this.userName = this.auth.userEmail
-        this.adminList = admins;
-        this.checkIsAdmin(this.adminList, this.userName)
         questions.forEach(item => {
-          if (this.isAdmin){
+          if (this.firebaseService.isAdmin) {
             this.questionsList.push(new Question(item))
-          }
-          else {
-            if (item.approved === true) this.questionsList.push(new Question(item))
+          } else {
+            if (item.approved === true || (item.approved === false && item.author === this.userName)) this.questionsList.push(new Question(item))
           }
         })
         this.filteredList = this.questionsList
         this.isLoading = true
-      })
     });
   }
 
-  checkIsAdmin(adminList: string[], currentUser: string){
-    adminList.forEach(admin=>{
-      if(admin === currentUser){
-        this.isAdmin = true
-      }
-    })
-  }
+  // checkIsAdmin(adminList: string[], currentUser: string) {
+  //   adminList.forEach(admin => {
+  //     if (admin === currentUser) {
+  //       this.isAdmin = true
+  //     }
+  //   })
+  // }
 
   setCurrentQuestion(question) {
-    this.router.navigate(['/viewQuestion',question.key])
+    this.router.navigate(['/viewQuestion', question.key])
     this.firebaseService.currentQuestion = question
   }
 
@@ -80,56 +94,51 @@ export class AllQuestionsComponent implements OnInit {
     this.isSorted = !this.isSorted
   }
 
-  filterForADay() {
-    this.filteredList = new FilterForADayPipe().transform(this.questionsList)
+
+  filterForATime(time: number) {
+    this.timeForFilter = time
   }
 
-  filterForAWeek() {
-    this.filteredList = new FilterForAWeekPipe().transform(this.questionsList)
+
+  filterForAllQuestions() {
+    this.selectedCategory = []
+    this.categoryFormArray.controls.map(control => control.setValue(false))
   }
 
-  filterForAMonth() {
-    this.filteredList = new FilterForAMonthPipe().transform(this.questionsList)
+  selectQuestions(type: string, userName?: string) {
+    this.filteredList = new SelectQuestionsPipe().transform(this.questionsList, type, userName)
   }
 
-  filterForAllTime() {
-    this.filteredList = this.questionsList
-  }
-
-  selectSolved(solved: boolean) {
-    this.filteredList = new SolvedQuestionsPipe().transform(this.questionsList, solved)
+  get categoryFormArray() {
+    return this.formForCategories.controls.category as FormArray;
   }
 
   filterByCategory(event, ...args) {
-    if (event){
-      if (event.target.checked){
-        this.selectedCategory.push(event.target.value)
+    if (event) {
+      if (event.target.checked) {
+        this.selectedCategory.push(event.target.name)
+      } else {
+        this.selectedCategory.splice(this.selectedCategory.indexOf(event.target.value), 1)
       }
-      else {
-        this.selectedCategory.splice(this.selectedCategory.indexOf(event.target.value),1)
-      }
-      if (this.selectedCategory.length === 0){
-        this.filteredList = this.questionsList
-      }
-      else {
-        this.filteredList = new FilterByCategoryPipe().transform(this.questionsList, this.selectedCategory)
-      }
+    } else {
+      this.selectedCategory = [...args]
     }
-    else {
-      this.filteredList = new FilterByCategoryPipe().transform(this.questionsList, [`${args}`])
-    }
+    this.selectedCategory = this.selectedCategory.concat([])
   }
 
   changeMarkUpView(type: string) {
     this.isLinear = type === 'linear';
   }
 
-  approveQuestion(key: string){
-    this.firebaseService.updatePost(key, {'approve': true}).then(()=>{
-      this.questionsList.map(question=>{
-        if (question.key === key) question.approved = true
-      })
-      this.filteredList = this.questionsList
-    })
+
+  changeTheme(theme: string) {
+    this.themeService.theme.next(theme)
+  }
+
+  clearAllFilters() {
+    this.selectQuestions('all');
+    this.filterForAllQuestions();
+    this.filterForATime(null)
   }
 }
+
