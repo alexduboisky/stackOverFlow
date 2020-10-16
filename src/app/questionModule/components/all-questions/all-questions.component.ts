@@ -34,6 +34,7 @@ export class AllQuestionsComponent implements OnInit {
   public formForQuestion: FormGroup
   public formForTime: FormGroup
   public selectedQuestions: string = 'all'
+  public isAdmin: boolean;
 
 
   constructor(public authService: AuthService, public firebaseService: DatabaseService, private router: Router, public themeService: ThemeService, private formBuilder: FormBuilder) {
@@ -60,8 +61,9 @@ export class AllQuestionsComponent implements OnInit {
   getPostsList() {
     this.firebaseService.getPostsList().subscribe(questions => {
       this.userName = this.authService.userEmail
+      this.isAdmin = this.firebaseService.isAdmin
         questions.forEach(item => {
-          if (this.firebaseService.isAdmin) {
+          if (this.isAdmin) {
             this.questionsList.push(new Question(item))
           } else {
             if (item.approved === false && item.author === this.userName){

@@ -82,6 +82,7 @@
         <div class="card-footer text-muted text-monospace text-center d-flex justify-content-between">
           <small>{{question.date | date:'dd.MM.yyy'}}</small>
           <small *ngIf="question.approved === false && question.author === userName" class="btn-danger">moderation</small>
+          <small *ngIf="question.approved === false && isAdmin" class="btn-warning">to approve</small>
         </div>
       </div>
     </div>
@@ -111,6 +112,7 @@
           <div>
             {{question.author}}
           </div>
+          <small *ngIf="question.approved === false && question.author === userName" class="btn-danger mr-3">moderation</small>
           <small>{{question.date | date:'dd.MM.yyy'}}</small>
         </div>
       </div>
