@@ -110,4 +110,9 @@ export class ViewQuestionComponent implements OnInit {
       this.currentQuestion.approved = true
     })
   }
+
+  deleteQuestion(key: string) {
+    this.firebaseService.deletePost(key)
+    this.backToAllQuestions();
+  }
 }
