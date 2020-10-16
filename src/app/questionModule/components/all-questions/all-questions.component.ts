@@ -33,6 +33,7 @@ export class AllQuestionsComponent implements OnInit {
   public formForCategories: FormGroup
   public formForQuestion: FormGroup
   public formForTime: FormGroup
+  public selectedQuestions: string = 'all'
 
 
   constructor(public authService: AuthService, public firebaseService: DatabaseService, private router: Router, public themeService: ThemeService, private formBuilder: FormBuilder) {
@@ -58,11 +59,17 @@ export class AllQuestionsComponent implements OnInit {
 
   getPostsList() {
     this.firebaseService.getPostsList().subscribe(questions => {
+      this.userName = this.authService.userEmail
         questions.forEach(item => {
           if (this.firebaseService.isAdmin) {
             this.questionsList.push(new Question(item))
           } else {
-            if (item.approved === true || (item.approved === false && item.author === this.userName)) this.questionsList.push(new Question(item))
+            if (item.approved === false && item.author === this.userName){
+              this.questionsList.push(new Question(item))
+            }
+            if (item.approved === true) {
+              this.questionsList.push(new Question(item))
+            }
           }
         })
         this.filteredList = this.questionsList
@@ -77,7 +84,6 @@ export class AllQuestionsComponent implements OnInit {
   }
 
   sort() {
-    this.filteredList = new SortByDatePipe().transform(this.filteredList, this.isSorted)
     this.isSorted = !this.isSorted
   }
 
@@ -92,8 +98,8 @@ export class AllQuestionsComponent implements OnInit {
     this.categoryFormArray.controls.map(control => control.setValue(false))
   }
 
-  selectQuestions(type: string, userName?: string) {
-    this.filteredList = new SelectQuestionsPipe().transform(this.questionsList, type, userName)
+  selectQuestions(type: string) {
+    this.selectedQuestions = type
   }
 
   get categoryFormArray() {

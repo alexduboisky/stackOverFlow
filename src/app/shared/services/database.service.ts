@@ -26,7 +26,6 @@ export class DatabaseService {
   constructor(private db: AngularFireDatabase, public authService: AuthService) {
     this.questionsRef = db.list(this.dbPath)
     this.adminsRef = db.object(this.adminsPath)
-    this.getAdmins()
   }
 
   createPost(question: Question): firebase.database.ThenableReference{
@@ -34,6 +33,7 @@ export class DatabaseService {
   }
 
   getPostsList(): Observable<Question[]>{
+    this.getAdmins()
     return  this.questionsRef.snapshotChanges().pipe(
       map(changes  =>
         changes.map(c =>

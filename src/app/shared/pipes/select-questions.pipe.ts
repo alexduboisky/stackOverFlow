@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class SelectQuestionsPipe implements PipeTransform {
 
-  transform(list: any, type: string, userName?: string): any {
+  transform(list: any, type: string): any {
 
     if (type==='all') return list
 
@@ -20,8 +20,8 @@ export class SelectQuestionsPipe implements PipeTransform {
       if (type === 'toApprove'){
         return question.approved === false
       }
-      if (type === userName){
-        return  question.author === userName
+      else {
+        return  question.author === type
       }
     });
 

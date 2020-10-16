@@ -21,7 +21,7 @@
             To Approve
           </label>
           <label *ngIf="!firebaseService.isAdmin" class="dropdown-item">
-            <input type="radio" formControlName="questions" value="myQuestions" (click)="selectQuestions(userName,userName)">
+            <input type="radio" formControlName="questions" value="myQuestions" (click)="selectQuestions(userName)">
             My Questions
           </label>
         </div>
@@ -70,7 +70,7 @@
     </li>
   </ul>
   <div class="row  row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3"  *ngIf="isLinear === false; else linear">
-    <div *ngFor="let question of filteredList | filterByCategory: selectedCategory | filterForATime: timeForFilter" class="col mb-4">
+    <div *ngFor="let question of filteredList | filterByCategory: selectedCategory | filterForATime: timeForFilter | filters: isSorted | selectQuestions: selectedQuestions" class="col mb-4">
       <div  class="card text-center d-flex" >
         <div class="card-body">
           <a class="text-dark text-decoration-none" role="button" (click)="setCurrentQuestion(question)">
@@ -79,8 +79,9 @@
           <hr>
           <a class="card-link" role="button" (click)="filterByCategory(undefined, tag)" *ngFor="let tag of question['category']">{{tag}}</a>
         </div>
-        <div class="card-footer text-muted text-monospace text-center">
+        <div class="card-footer text-muted text-monospace text-center d-flex justify-content-between">
           <small>{{question.date | date:'dd.MM.yyy'}}</small>
+          <small *ngIf="question.approved === false && question.author === userName" class="btn-danger">moderation</small>
         </div>
       </div>
     </div>
