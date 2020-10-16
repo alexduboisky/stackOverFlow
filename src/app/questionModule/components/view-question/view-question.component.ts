@@ -16,15 +16,16 @@ export class ViewQuestionComponent implements OnInit {
   public currentQuestion: Question
   public currentAnswer: object;
   public isLoading: boolean = false
+  public userEmail: string
   form: FormGroup
   dbPath: string
   commentsKeys: string[] = []
 
-  constructor(public firebaseService: DatabaseService, private router: Router, public authService: AuthService, currentRout: ActivatedRoute) {
+  constructor(public firebaseService: DatabaseService, private router: Router, private authService: AuthService, currentRout: ActivatedRoute) {
     currentRout.url.subscribe(route=>{
       this.dbPath = route[1].path
     })
-
+    this.userEmail = authService.userEmail
   }
 
   ngOnInit(): void {

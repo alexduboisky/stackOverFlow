@@ -67,17 +67,10 @@ export class DatabaseService {
   }
 
   getAdmins(){
-    this.adminsRef.valueChanges().subscribe(admins => {
-      this.adminList = admins;
-      this.checkIsAdmin(this.adminList, this.authService.userEmail)
+    this.adminsRef.valueChanges().subscribe((admins: string[]) => {
+      this.adminList = admins
+      this.isAdmin = this.adminList.includes(this.authService.userEmail)
   })}
 
-  checkIsAdmin(adminList: string[], currentUser: string) {
-    adminList.forEach(admin => {
-      if (admin === currentUser) {
-        this.isAdmin = true
-      }
-    })
-  }
 
 }

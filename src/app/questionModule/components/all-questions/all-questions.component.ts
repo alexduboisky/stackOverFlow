@@ -9,6 +9,7 @@ import {SelectQuestionsPipe} from '../../../shared/pipes/select-questions.pipe';
 import {Question} from '../../../shared/classes/question';
 import {ThemeService} from '../../../shared/services/theme.service';
 import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {JsonList} from '../../../shared/classes/json-list';
 
 @Component({
   selector: 'app-all-questions',
@@ -23,13 +24,12 @@ export class AllQuestionsComponent implements OnInit {
   public isSorted: boolean = false
   public selectedCategory = []
   public isLinear: boolean = false
-  public adminList: string[] = []
-  //public isAdmin: boolean = false
+  public adminList: JsonList[] = []
   public timeForFilter: number = null
 
   public userName: string
   public categoryList: object[] = []
-  public themesList: object[] = []
+  public themesList: JsonList[] = []
   public formForCategories: FormGroup
   public formForQuestion: FormGroup
   public formForTime: FormGroup
@@ -44,16 +44,10 @@ export class AllQuestionsComponent implements OnInit {
       category: new FormArray([])
     })
     this.formForQuestion = this.formBuilder.group({
-      questions: [new FormControl(''),
-                  new FormControl(''),
-                  new FormControl(''),
-                  new FormControl('')]
+      questions: new FormControl('all')
     })
     this.formForTime = this.formBuilder.group({
-      time: [new FormControl(false),
-        new FormControl(false),
-        new FormControl(false),
-        new FormControl(true)]
+      time: new FormControl('forTheAllTime')
     })
     this.getPostsList()
     this.categoryList = category.category
@@ -76,13 +70,6 @@ export class AllQuestionsComponent implements OnInit {
     });
   }
 
-  // checkIsAdmin(adminList: string[], currentUser: string) {
-  //   adminList.forEach(admin => {
-  //     if (admin === currentUser) {
-  //       this.isAdmin = true
-  //     }
-  //   })
-  // }
 
   setCurrentQuestion(question) {
     this.router.navigate(['/viewQuestion', question.key])
@@ -139,6 +126,8 @@ export class AllQuestionsComponent implements OnInit {
     this.selectQuestions('all');
     this.filterForAllQuestions();
     this.filterForATime(null)
+    this.formForTime.controls.time.setValue('forTheAllTime')
+    this.formForQuestion.controls.questions.setValue('all')
   }
 }
 

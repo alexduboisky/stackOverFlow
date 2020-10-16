@@ -47,7 +47,7 @@
             For the month
           </label>
           <label class="dropdown-item">
-            <input type="radio" formControlName="time" value="forTheAllTime" (click)="selectQuestions('solved')">
+            <input type="radio" formControlName="time" value="forTheAllTime" (click)="filterForATime(null)">
             For all time
           </label>
         </div>
@@ -83,21 +83,6 @@
           <small>{{question.date | date:'dd.MM.yyy'}}</small>
         </div>
       </div>
-<!--      <ng-template #adminTiled>-->
-<!--        <div class="card text-center d-flex ">-->
-<!--          <div class="card-body">-->
-<!--            <a class="text-dark text-decoration-none" role="button" (click)="setCurrentQuestion(question)">-->
-<!--              <h5 class="card-title">{{question.title}}</h5>-->
-<!--            </a>-->
-<!--            <hr>-->
-<!--            <a class="card-link" role="button" (click)="filterByCategory(undefined, tag)" *ngFor="let tag of question['category']">{{tag}}</a>-->
-<!--          </div>-->
-<!--          <div class="card-footer text-muted text-monospace text-center">-->
-<!--            <small>{{question.date | date:'dd.MM.yyy'}}</small>-->
-<!--          </div>-->
-<!--        </div>-->
-
-<!--      </ng-template>-->
     </div>
   </div>
 </div>
@@ -128,23 +113,6 @@
           <small>{{question.date | date:'dd.MM.yyy'}}</small>
         </div>
       </div>
-<!--      <ng-template #adminLinear>-->
-<!--        <div class="card  d-flex ">-->
-<!--          <div class="card-body">-->
-<!--            <a class="text-dark text-decoration-none" role="button" (click)="setCurrentQuestion(question)">-->
-<!--              <h5 class="card-title">{{question.title}}</h5>-->
-<!--            </a>-->
-<!--            <hr>-->
-<!--              <a class="card-link" role="button" (click)="filterByCategory(undefined, tag)"  *ngFor="let tag of question['category']">{{tag}}</a>-->
-<!--          </div>-->
-<!--          <div class="card-footer text-muted text-monospace justify-content-between d-flex">-->
-<!--            <div>-->
-<!--              {{question.author}}-->
-<!--            </div>-->
-<!--            <small>{{question.date | date:'dd.MM.yyy'}}</small>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </ng-template>-->
     </div>
   </div>
 </ng-template>
