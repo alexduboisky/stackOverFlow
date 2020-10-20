@@ -8,6 +8,7 @@ import {Question} from '../../../shared/classes/question';
 import {ThemeService} from '../../../shared/services/theme.service';
 import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {JsonList} from '../../../shared/classes/json-list';
+import {switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-all-questions',
@@ -38,6 +39,7 @@ export class AllQuestionsComponent implements OnInit {
   constructor(public authService: AuthService, public firebaseService: DatabaseService, private router: Router, public themeService: ThemeService, private formBuilder: FormBuilder) {
     themeService.theme.subscribe()
 
+    this.authService
   }
 
   ngOnInit(): void {
@@ -58,7 +60,11 @@ export class AllQuestionsComponent implements OnInit {
 
 
   getPostsList() {
-    this.firebaseService.getPostsList().subscribe(questions => {
+
+    this.authService.user.pipe(
+      switchMap(()=> this.firebaseService.getPostsList())
+    )
+      .subscribe(questions => {
       this.questionsList = []
       this.userName = this.authService.userEmail
       this.isAdmin = this.firebaseService.isAdmin

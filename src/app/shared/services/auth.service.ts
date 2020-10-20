@@ -11,7 +11,7 @@ import {AngularFireDatabase} from '@angular/fire/database';
 @Injectable()
 export class AuthService {
 
-  public user: Observable<firebase.User>;
+  public user$: Observable<firebase.User>;
   public userEmail: string
   public isAdmin: boolean = false
 
@@ -20,11 +20,12 @@ export class AuthService {
 
   constructor(private firebaseAuth: AngularFireAuth, private firebase: AngularFireDatabase,) {
 
-    this.user = this.firebaseAuth.authState.pipe(
+    this.user$ = this.firebaseAuth.authState.pipe(
       map(user=> {
         this.userEmail = user && user.email
         return user
-      })
+      }),
+      switchMap(user=>this.checkUserIsAdmin(this.userEmail))
     )
   }
 
@@ -56,7 +57,7 @@ export class AuthService {
   }
 
   checkUserIsAdmin(userEmail){
-      this.firebase.database.ref().child('admins').orderByChild('email').equalTo(userEmail).on('value', snapshot =>{
+      return this.firebase.database.ref().child('admins').orderByChild('email').equalTo(userEmail).on('value', snapshot =>{
       this.isAdmin = snapshot.exists();
     })
   }
