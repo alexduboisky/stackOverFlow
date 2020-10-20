@@ -4,8 +4,6 @@ import * as category from '../../../../assets/data/category.json';
 import * as themes from '../../../../assets/data/themes.json'
 import {DatabaseService} from '../../../shared/services/database.service';
 import {Router} from '@angular/router';
-import {SortByDatePipe} from '../../../shared/pipes/sortByDate.pipe';
-import {SelectQuestionsPipe} from '../../../shared/pipes/select-questions.pipe';
 import {Question} from '../../../shared/classes/question';
 import {ThemeService} from '../../../shared/services/theme.service';
 import {FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
@@ -39,6 +37,7 @@ export class AllQuestionsComponent implements OnInit {
 
   constructor(public authService: AuthService, public firebaseService: DatabaseService, private router: Router, public themeService: ThemeService, private formBuilder: FormBuilder) {
     themeService.theme.subscribe()
+
   }
 
   ngOnInit(): void {
@@ -60,6 +59,7 @@ export class AllQuestionsComponent implements OnInit {
 
   getPostsList() {
     this.firebaseService.getPostsList().subscribe(questions => {
+      this.questionsList = []
       this.userName = this.authService.userEmail
       this.isAdmin = this.firebaseService.isAdmin
         questions.forEach(item => {
