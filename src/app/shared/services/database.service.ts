@@ -12,16 +12,11 @@ import {AuthService} from './auth.service';
 export class DatabaseService {
 
   private dbPath = '/questions'
-  private adminsPath = '/admins'
   public currentQuestion: Question;
 
   questionsRef: AngularFireList<Question> = null;
   questionObj : AngularFireObject<Question> = null
   questionCommentObject: AngularFireList<object> = null
-  adminsRef: AngularFireObject<any> = null;
-
-  public isAdmin: boolean = false
-  public adminList: string[] = []
 
   constructor(private db: AngularFireDatabase, public authService: AuthService) {
     this.questionsRef = db.list(this.dbPath)

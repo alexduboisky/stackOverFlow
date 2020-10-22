@@ -6,28 +6,33 @@ import {observable, Observable, of} from 'rxjs';
 import {auth} from 'firebase/app';
 import {map, switchMap} from 'rxjs/operators';
 import {AngularFireDatabase} from '@angular/fire/database';
+import {CurrentUser} from '../classes/current-user';
 
 
 @Injectable()
 export class AuthService {
 
-  public user$: Observable<firebase.User>;
-  public userEmail: string
-  public isAdmin: boolean = false
-
-  public adminList: string[] = []
+  public user$: Observable<CurrentUser>;
+  public currentUser: CurrentUser
 
 
   constructor(private firebaseAuth: AngularFireAuth, private firebase: AngularFireDatabase,) {
+    this.checkLogin()
+  }
 
-    this.user$ = this.firebaseAuth.authState.pipe(
-      map(user=> {
-        this.userEmail = user && user.email
-        return user
-      }),
-      switchMap(user=>this.checkUserIsAdmin(this.userEmail))
+  checkLogin(){
+    if (this.currentUser != undefined){
+      return of(this.currentUser)
+    }
+    return this.user$ = this.firebaseAuth.authState.pipe(
+      map(user=> user),
+      switchMap(user=> {
+        this.checkUserIsAdmin(user.email)
+        return of(this.currentUser)
+      })
     )
   }
+
 
   signup(email: string, password: string) {
     return this.firebaseAuth.auth.createUserWithEmailAndPassword(email, password)
@@ -56,9 +61,20 @@ export class AuthService {
     return this.firebaseAuth.auth.signOut()
   }
 
+  // checkUserIsAdmin(userEmail){
+  //     return this.firebase.database.ref().child('admins').orderByChild('email').equalTo(userEmail).on('value', snapshot =>{
+  //       this.currentUser = new CurrentUser({'email':userEmail,'isAdmin': snapshot.exists()})
+  //    })
+  // }
+
   checkUserIsAdmin(userEmail){
-      return this.firebase.database.ref().child('admins').orderByChild('email').equalTo(userEmail).on('value', snapshot =>{
-      this.isAdmin = snapshot.exists();
+    this.firebase.list('admins').valueChanges().subscribe(admins=> {
+      if (admins.includes(userEmail)) {
+        this.currentUser = new CurrentUser({'email': userEmail, 'isAdmin': true})
+      }
+      else {
+        this.currentUser = new CurrentUser({'email': userEmail, 'isAdmin': false})
+      }
     })
   }
 }

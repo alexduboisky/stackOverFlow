@@ -23,8 +23,8 @@
       <div>
         <small *ngIf="currentQuestion.approved === false && currentQuestion.author === userEmail" class="btn-danger mr-3">moderation</small>
         <button *ngIf="currentQuestion.author === userEmail && currentQuestion.approved === false" class="text-decoration-none btn btn-primary mr-2" role="button"  (click)="editQuestion(currentQuestion)">Edit</button>
-        <button *ngIf="(currentQuestion.approved === false && firebaseService.isAdmin === true) || (currentQuestion.approved === false && firebaseService.isAdmin === true && currentQuestion.author === userEmail)" class="text-decoration-none btn btn-success mr-2" role="button"  (click)="approveQuestion(currentQuestion.key)">Approve</button>
-        <button *ngIf="currentQuestion.author === userEmail ||firebaseService.isAdmin === true " class="text-decoration-none btn btn-danger" role="button"  (click)="deleteQuestion(currentQuestion.key)">Delete</button>
+        <button *ngIf="(currentQuestion.approved === false && PostService.isAdmin === true) || (currentQuestion.approved === false && PostService.isAdmin === true && currentQuestion.author === userEmail)" class="text-decoration-none btn btn-success mr-2" role="button" (click)="approveQuestion(currentQuestion.key)">Approve</button>
+        <button *ngIf="currentQuestion.author === userEmail ||PostService.isAdmin === true " class="text-decoration-none btn btn-danger" role="button" (click)="deleteQuestion(currentQuestion.key)">Delete</button>
       </div>
     </div>
   </div>

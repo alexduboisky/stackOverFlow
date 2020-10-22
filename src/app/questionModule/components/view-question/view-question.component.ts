@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Question} from '../../../shared/classes/question';
 import { FormControl, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../../../shared/services/auth.service';
+import {switchMap} from 'rxjs/operators';
 
 
 @Component({
@@ -21,18 +22,18 @@ export class ViewQuestionComponent implements OnInit {
   dbPath: string
   commentsKeys: string[] = []
 
-  constructor(public firebaseService: DatabaseService, private router: Router, private authService: AuthService, currentRout: ActivatedRoute) {
+  constructor(public PostService: DatabaseService, private router: Router, private authService: AuthService, currentRout: ActivatedRoute) {
     currentRout.url.subscribe(route=>{
       this.dbPath = route[1].path
     })
-    this.userEmail = authService.userEmail
   }
 
   ngOnInit(): void {
-    if (!this.firebaseService.currentQuestion) {
+    if (!this.PostService.currentQuestion) {
+      this.authService.user$.pipe()
       this.getPost(`/questions/${this.dbPath}`)
     } else {
-      this.setCurrentQuestion(this.firebaseService.currentQuestion)
+      this.setCurrentQuestion(this.PostService.currentQuestion)
     }
     this.form = new FormGroup({
       comment: new FormControl(null,[Validators.required])
@@ -40,7 +41,9 @@ export class ViewQuestionComponent implements OnInit {
   }
 
   getPost(path){
-    this.firebaseService.getPost(path).valueChanges()
+    this.authService.user$.pipe(
+      switchMap(()=>this.PostService.getPost(path).valueChanges())
+    )
       .subscribe(question=>
       {
         this.setCurrentQuestion(question)
@@ -56,6 +59,7 @@ export class ViewQuestionComponent implements OnInit {
     this.currentQuestion = question
     this.isLoading = true
     this.getCommentsKeys(this.currentQuestion.comments)
+    this.userEmail = this.authService.currentUser.email
   }
 
   addAnswer() {
@@ -65,12 +69,12 @@ export class ViewQuestionComponent implements OnInit {
       text:this.form.controls.comment.value,
       right: false
     }
-    this.firebaseService.addComment(
+    this.PostService.addComment(
       this.currentAnswer,
       `/questions/${this.dbPath}/comments`)
       .then(commentKey => {
-        this.firebaseService.getPost(this.dbPath)
-        this.currentQuestion.comments[commentKey.key] = this.currentAnswer//сюда с бэка
+        this.PostService.getPost(this.dbPath)
+        this.currentQuestion.comments[commentKey.key] = this.currentAnswer
         this.getCommentsKeys(this.currentQuestion.comments)
       })
     this.form.reset()
@@ -96,23 +100,23 @@ export class ViewQuestionComponent implements OnInit {
 
   toggleRight($event: Event, key: string) {
     this.currentQuestion.comments[key].right = $event.target['checked']
-    this.firebaseService.updateComment(`/questions/${this.dbPath}/comments`,key,{right: $event.target['checked']})
-    this.firebaseService.updatePost(this.dbPath,{solved: $event.target['checked']})
+    this.PostService.updateComment(`/questions/${this.dbPath}/comments`,key,{right: $event.target['checked']})
+    this.PostService.updatePost(this.dbPath,{solved: $event.target['checked']})
   }
 
   editQuestion(question) {
     this.router.navigate([`/editQuestion/${this.dbPath}`])
-    this.firebaseService.currentQuestion = question
+    this.PostService.currentQuestion = question
   }
 
   approveQuestion(key: string) {
-    this.firebaseService.updatePost(key, {'approved': true}).then(() => {
+    this.PostService.updatePost(key, {'approved': true}).then(() => {
       this.currentQuestion.approved = true
     })
   }
 
   deleteQuestion(key: string) {
-    this.firebaseService.deletePost(key)
+    this.PostService.deletePost(key)
     this.backToAllQuestions();
   }
 }

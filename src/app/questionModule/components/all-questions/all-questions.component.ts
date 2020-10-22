@@ -36,10 +36,8 @@ export class AllQuestionsComponent implements OnInit {
   public isAdmin: boolean;
 
 
-  constructor(public authService: AuthService, public firebaseService: DatabaseService, private router: Router, public themeService: ThemeService, private formBuilder: FormBuilder) {
+  constructor(public authService: AuthService, public PostService: DatabaseService, private router: Router, public themeService: ThemeService, private formBuilder: FormBuilder) {
     themeService.theme.subscribe()
-
-    this.authService
   }
 
   ngOnInit(): void {
@@ -61,34 +59,34 @@ export class AllQuestionsComponent implements OnInit {
 
   getPostsList() {
 
-    this.authService.user.pipe(
-      switchMap(()=> this.firebaseService.getPostsList())
+    this.authService.user$.pipe(
+      switchMap(()=> this.PostService.getPostsList())
     )
       .subscribe(questions => {
-      this.questionsList = []
-      this.userName = this.authService.userEmail
-      this.isAdmin = this.firebaseService.isAdmin
-        questions.forEach(item => {
-          if (this.isAdmin) {
-            this.questionsList.push(new Question(item))
-          } else {
-            if (item.approved === false && item.author === this.userName){
+        this.questionsList = []
+        this.userName = this.authService.currentUser.email
+        this.isAdmin = this.authService.currentUser.isAdmin
+          questions.forEach(item => {
+            if (this.isAdmin) {
               this.questionsList.push(new Question(item))
+            } else {
+              if (item.approved === false && item.author === this.userName){
+                this.questionsList.push(new Question(item))
+              }
+              if (item.approved === true) {
+                this.questionsList.push(new Question(item))
+              }
             }
-            if (item.approved === true) {
-              this.questionsList.push(new Question(item))
-            }
-          }
-        })
-        this.filteredList = this.questionsList
-        this.isLoading = true
+          })
+          this.filteredList = this.questionsList
+          this.isLoading = true
     });
   }
 
 
   setCurrentQuestion(question) {
     this.router.navigate(['/viewQuestion', question.key])
-    this.firebaseService.currentQuestion = question
+    this.PostService.currentQuestion = question
   }
 
   sort() {

@@ -1,34 +1,41 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {User} from 'firebase';
 import {AuthService} from '../../shared/services/auth.service';
 import {Router} from '@angular/router';
 import {ThemeService} from '../../shared/services/theme.service';
 import {DatabaseService} from '../../shared/services/database.service';
+import {CurrentUser} from '../../shared/classes/current-user';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-main-page',
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.scss']
 })
-export class MainPageComponent {
+export class MainPageComponent{
 
   public isAuth: boolean
-  public user: User
+  public user: CurrentUser
 
-  constructor(private auth: AuthService, private router: Router, public themeService: ThemeService, private databaseService: DatabaseService) {
-    auth.user.subscribe((user)=>{
-      this.user = user
-      this.isAuth = user != null;
-    })
+  constructor(private authService: AuthService, private router: Router, public themeService: ThemeService, private databaseService: DatabaseService) {
     themeService.theme.subscribe()
+    authService.user$.pipe(
+      map(user=>{
+        console.log(user)
+        this.isAuth = true
+        this.user = user
+      })
+    )
   }
 
 
+
   logout() {
-    this.auth.logout()
+    this.authService.logout()
       .then(() => {
         this.router.navigate(['login'])
-        this.databaseService.isAdmin = false
+        this.authService.currentUser = undefined
+        this.isAuth = false
       });
   }
 
