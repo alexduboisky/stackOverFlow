@@ -23,12 +23,11 @@ export class AuthService {
 
   checkLogin(){
     if (this.currentUser != undefined){
-      console.log(this.currentUser)
       return of(this.currentUser)
     }
     return this.user$ = this.firebaseAuth.authState.pipe(
       map(user=> this.userEmail = user.email),
-      switchMap(user=> {
+      switchMap(()=> {
         return  this.getAdmins()
       }),
       switchMap(admins=>{

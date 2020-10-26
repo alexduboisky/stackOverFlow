@@ -1,11 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {User} from 'firebase';
+import {Component} from '@angular/core';
 import {AuthService} from '../../shared/services/auth.service';
 import {Router} from '@angular/router';
 import {ThemeService} from '../../shared/services/theme.service';
-import {DatabaseService} from '../../shared/services/database.service';
 import {CurrentUser} from '../../shared/classes/current-user';
-import {map, switchMap} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-main-page',
@@ -17,7 +15,7 @@ export class MainPageComponent{
   public isAuth: boolean
   public user: CurrentUser
 
-  constructor(private authService: AuthService, private router: Router, public themeService: ThemeService, private databaseService: DatabaseService) {
+  constructor(private authService: AuthService, private router: Router, public themeService: ThemeService) {
     themeService.theme.subscribe()
     authService.user$.pipe(
       map(user=> {
