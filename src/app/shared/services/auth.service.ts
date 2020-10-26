@@ -14,6 +14,7 @@ export class AuthService {
 
   public user$: Observable<CurrentUser>;
   public currentUser: CurrentUser
+  public userEmail: string
 
 
   constructor(private firebaseAuth: AngularFireAuth, private firebase: AngularFireDatabase,) {
@@ -22,12 +23,16 @@ export class AuthService {
 
   checkLogin(){
     if (this.currentUser != undefined){
+      console.log(this.currentUser)
       return of(this.currentUser)
     }
     return this.user$ = this.firebaseAuth.authState.pipe(
-      map(user=> user),
+      map(user=> this.userEmail = user.email),
       switchMap(user=> {
-        this.checkUserIsAdmin(user.email)
+        return  this.getAdmins()
+      }),
+      switchMap(admins=>{
+        this.checkUserIsAdmin(admins,this.userEmail)
         return of(this.currentUser)
       })
     )
@@ -67,14 +72,16 @@ export class AuthService {
   //    })
   // }
 
-  checkUserIsAdmin(userEmail){
-    this.firebase.list('admins').valueChanges().subscribe(admins=> {
-      if (admins.includes(userEmail)) {
-        this.currentUser = new CurrentUser({'email': userEmail, 'isAdmin': true})
+  getAdmins(){
+    return this.firebase.list('admins').valueChanges()
+  }
+
+  checkUserIsAdmin(list, userEmail){
+      if (list.includes(userEmail)) {
+         this.currentUser = new CurrentUser({'email': userEmail, 'isAdmin': true})
       }
       else {
-        this.currentUser = new CurrentUser({'email': userEmail, 'isAdmin': false})
+         this.currentUser = new CurrentUser({'email': userEmail, 'isAdmin': false})
       }
-    })
-  }
+    }
 }

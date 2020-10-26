@@ -21,6 +21,7 @@ export class ViewQuestionComponent implements OnInit {
   form: FormGroup
   dbPath: string
   commentsKeys: string[] = []
+  public isAdmin: boolean;
 
   constructor(public PostService: DatabaseService, private router: Router, private authService: AuthService, currentRout: ActivatedRoute) {
     currentRout.url.subscribe(route=>{
@@ -60,6 +61,7 @@ export class ViewQuestionComponent implements OnInit {
     this.isLoading = true
     this.getCommentsKeys(this.currentQuestion.comments)
     this.userEmail = this.authService.currentUser.email
+    this.isAdmin = this.authService.currentUser.isAdmin
   }
 
   addAnswer() {

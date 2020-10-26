@@ -16,11 +16,11 @@
             <input type="radio" formControlName="questions" value="solved" (click)="selectQuestions('solved')">
             Solved
           </label>
-          <label *ngIf="PostService.isAdmin" class="dropdown-item">
+          <label *ngIf="isAdmin" class="dropdown-item">
             <input type="radio" formControlName="questions" value="toApprove" (click)="selectQuestions('toApprove')">
             To Approve
           </label>
-          <label *ngIf="!PostService.isAdmin" class="dropdown-item">
+          <label *ngIf="!isAdmin" class="dropdown-item">
             <input type="radio" formControlName="questions" value="myQuestions" (click)="selectQuestions(userName)">
             My Questions
           </label>

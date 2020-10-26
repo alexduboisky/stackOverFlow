@@ -5,7 +5,7 @@ import {Router} from '@angular/router';
 import {ThemeService} from '../../shared/services/theme.service';
 import {DatabaseService} from '../../shared/services/database.service';
 import {CurrentUser} from '../../shared/classes/current-user';
-import {map} from 'rxjs/operators';
+import {map, switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-main-page',
@@ -20,12 +20,11 @@ export class MainPageComponent{
   constructor(private authService: AuthService, private router: Router, public themeService: ThemeService, private databaseService: DatabaseService) {
     themeService.theme.subscribe()
     authService.user$.pipe(
-      map(user=>{
-        console.log(user)
-        this.isAuth = true
-        this.user = user
+      map(user=> {
+          this.user = user
+          this.isAuth = true
       })
-    )
+    ).subscribe()
   }
 
 
