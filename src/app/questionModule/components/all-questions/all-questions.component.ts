@@ -38,6 +38,9 @@ export class AllQuestionsComponent implements OnInit {
 
   constructor(public authService: AuthService, public PostService: DatabaseService, private router: Router, public themeService: ThemeService, private formBuilder: FormBuilder) {
     themeService.theme.subscribe()
+    if (localStorage.getItem('theme')) {
+      this.changeTheme(localStorage.getItem('theme'));
+    }
   }
 
   ngOnInit(): void {
@@ -132,6 +135,7 @@ export class AllQuestionsComponent implements OnInit {
 
   changeTheme(theme: string) {
     this.themeService.theme.next(theme)
+    localStorage.setItem('theme', `${theme}`)
   }
 
   clearAllFilters() {
