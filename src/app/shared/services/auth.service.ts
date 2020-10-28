@@ -1,10 +1,9 @@
 import {Injectable} from '@angular/core';
 
-import * as firebase from 'firebase/app';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {forkJoin, observable, Observable, of, pipe} from 'rxjs';
+import {forkJoin, Observable, of} from 'rxjs';
 import {auth} from 'firebase/app';
-import {map, mergeMap, switchMap} from 'rxjs/operators';
+import {map, take} from 'rxjs/operators';
 import {AngularFireDatabase} from '@angular/fire/database';
 import {CurrentUser} from '../classes/current-user';
 
@@ -18,16 +17,16 @@ export class AuthService {
 
 
   constructor(private firebaseAuth: AngularFireAuth, private firebase: AngularFireDatabase,) {
-    this.user$ = this.firebaseAuth.authState.pipe(
-      map(user=> {
-        this.currentUser = user ? new CurrentUser({'email': user.email, 'isAdmin': false}) : null;
-        console.log(this.currentUser)
-        return this.currentUser
-      })
-    )
   }
 
   checkLogin(){
+    this.user$ = this.firebaseAuth.authState.pipe(
+      take(1),
+      map(user=> {
+        this.currentUser = user ? new CurrentUser({'email': user.email, 'isAdmin': false}) : null;
+        return this.currentUser
+      })
+    )
     if (this.currentUser){
       return of(this.currentUser)
     }
@@ -36,7 +35,6 @@ export class AuthService {
       admins: this.getAdmins()
     }).pipe(
       map(dataArr=>{
-        console.log(dataArr)
         if (this.currentUser) {
           this.checkUserIsAdmin(dataArr.admins, this.currentUser.email)
         }
@@ -75,10 +73,8 @@ export class AuthService {
 
   getAdmins(){
     return this.firebase.list('admins').valueChanges().pipe(
-      map(value => {
-        console.log(value)
-        return value
-      })
+      take(1),
+      map(admins =>  admins)
     )
   }
 

@@ -27,6 +27,12 @@ body {
   a:hover{
     color: white !important;
   }
+  .signup-form, .login-form{
+    border: #343A40 1px solid;
+    padding: 30px;
+    border-radius: 30px;
+    background: #343A40;
+  }
 }
 .wrapper{
   min-height: 100vh;
