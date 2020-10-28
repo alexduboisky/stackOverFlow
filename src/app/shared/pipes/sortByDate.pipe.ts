@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'filters'
+  name: 'filters',
+  pure: false
 })
 export class SortByDatePipe implements PipeTransform {
 

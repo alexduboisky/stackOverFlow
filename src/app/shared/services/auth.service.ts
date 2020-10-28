@@ -2,9 +2,9 @@ import {Injectable} from '@angular/core';
 
 import * as firebase from 'firebase/app';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {observable, Observable, of} from 'rxjs';
+import {forkJoin, observable, Observable, of, pipe} from 'rxjs';
 import {auth} from 'firebase/app';
-import {map, switchMap} from 'rxjs/operators';
+import {map, mergeMap, switchMap} from 'rxjs/operators';
 import {AngularFireDatabase} from '@angular/fire/database';
 import {CurrentUser} from '../classes/current-user';
 
@@ -18,21 +18,29 @@ export class AuthService {
 
 
   constructor(private firebaseAuth: AngularFireAuth, private firebase: AngularFireDatabase,) {
-    this.checkLogin()
+    this.user$ = this.firebaseAuth.authState.pipe(
+      map(user=> {
+        this.currentUser = user ? new CurrentUser({'email': user.email, 'isAdmin': false}) : null;
+        console.log(this.currentUser)
+        return this.currentUser
+      })
+    )
   }
 
   checkLogin(){
-    if (this.currentUser != undefined){
+    if (this.currentUser){
       return of(this.currentUser)
     }
-    return this.user$ = this.firebaseAuth.authState.pipe(
-      map(user=> this.userEmail = user.email),
-      switchMap(()=> {
-        return  this.getAdmins()
-      }),
-      switchMap(admins=>{
-        this.checkUserIsAdmin(admins,this.userEmail)
-        return of(this.currentUser)
+    return forkJoin({
+      users: this.user$,
+      admins: this.getAdmins()
+    }).pipe(
+      map(dataArr=>{
+        console.log(dataArr)
+        if (this.currentUser) {
+          this.checkUserIsAdmin(dataArr.admins, this.currentUser.email)
+        }
+        return this.currentUser
       })
     )
   }
@@ -56,31 +64,25 @@ export class AuthService {
     return await this.firebaseAuth.auth.signInWithPopup(provider)
   }
 
-  async loginWithMicrosoft(){
+  loginWithMicrosoft(){
     const  provider = new auth.OAuthProvider('microsoft.com');
-    return await this.firebaseAuth.auth.signInWithPopup(provider)
+    return this.firebaseAuth.auth.signInWithPopup(provider)
   }
 
   logout() {
-    return this.firebaseAuth.auth.signOut()
+    return this.firebaseAuth.auth.signOut();
   }
 
-  // checkUserIsAdmin(userEmail){
-  //     return this.firebase.database.ref().child('admins').orderByChild('email').equalTo(userEmail).on('value', snapshot =>{
-  //       this.currentUser = new CurrentUser({'email':userEmail,'isAdmin': snapshot.exists()})
-  //    })
-  // }
-
   getAdmins(){
-    return this.firebase.list('admins').valueChanges()
+    return this.firebase.list('admins').valueChanges().pipe(
+      map(value => {
+        console.log(value)
+        return value
+      })
+    )
   }
 
   checkUserIsAdmin(list, userEmail){
-      if (list.includes(userEmail)) {
-         this.currentUser = new CurrentUser({'email': userEmail, 'isAdmin': true})
-      }
-      else {
-         this.currentUser = new CurrentUser({'email': userEmail, 'isAdmin': false})
-      }
+      this.currentUser.isAdmin = list.includes(userEmail);
     }
 }

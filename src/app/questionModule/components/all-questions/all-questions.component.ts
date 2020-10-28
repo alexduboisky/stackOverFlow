@@ -62,7 +62,7 @@ export class AllQuestionsComponent implements OnInit {
 
   getPostsList() {
 
-    this.authService.user$.pipe(
+    this.authService.checkLogin().pipe(
       switchMap(()=> this.PostService.getPostsList())
     )
       .subscribe(questions => {

@@ -17,12 +17,12 @@ export class MainPageComponent{
 
   constructor(private authService: AuthService, private router: Router, public themeService: ThemeService) {
     themeService.theme.subscribe()
-    authService.user$.pipe(
-      map(user=> {
-          this.user = user
-          this.isAuth = true
-      })
-    ).subscribe()
+    // authService.checkLogin().subscribe(
+    //   user=> {
+    //     this.user = user
+    //     this.isAuth = true
+    //   }
+    // )
   }
 
 
@@ -31,7 +31,6 @@ export class MainPageComponent{
     this.authService.logout()
       .then(() => {
         this.router.navigate(['login'])
-        this.authService.currentUser = undefined
         this.isAuth = false
       });
   }

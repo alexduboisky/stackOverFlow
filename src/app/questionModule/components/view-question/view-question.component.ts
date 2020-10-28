@@ -42,7 +42,7 @@ export class ViewQuestionComponent implements OnInit {
   }
 
   getPost(path){
-    this.authService.user$.pipe(
+    this.authService.checkLogin().pipe(
       switchMap(()=>this.PostService.getPost(path).valueChanges())
     )
       .subscribe(question=>
