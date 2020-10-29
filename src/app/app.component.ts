@@ -3,6 +3,7 @@ import {ThemeService} from './shared/services/theme.service';
 import {CurrentUser} from './shared/classes/current-user';
 import {AuthService} from './shared/services/auth.service';
 import {Router} from '@angular/router';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -17,10 +18,9 @@ export class AppComponent{
   public user: CurrentUser
 
   constructor(private authService: AuthService, private router: Router, public themeService: ThemeService) {
-    themeService.theme.subscribe(value => console.log(value))
+    themeService.theme.subscribe()
     authService.checkLogin().subscribe(
       user=> {
-        console.log(user)
         if (user){
           this.user = user
           this.isAuth = true

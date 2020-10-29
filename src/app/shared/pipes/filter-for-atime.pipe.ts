@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'filterForATime'
+  name: 'filterForATime',
+  pure: false
 })
 export class FilterForATimePipe implements PipeTransform {
 

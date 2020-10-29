@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'selectQuestions'
+  name: 'selectQuestions',
+  pure: false
 })
 export class SelectQuestionsPipe implements PipeTransform {
 

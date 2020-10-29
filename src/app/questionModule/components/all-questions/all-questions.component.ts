@@ -66,9 +66,11 @@ export class AllQuestionsComponent implements OnInit {
       switchMap(()=> this.PostService.getPostsList())
     )
       .subscribe(questions => {
+        if (this.authService.currentUser){
+          this.userName = this.authService.currentUser.email
+          this.isAdmin = this.authService.currentUser.isAdmin
+        }
         this.questionsList = []
-        this.userName = this.authService.currentUser.email
-        this.isAdmin = this.authService.currentUser.isAdmin
           questions.forEach(item => {
             if (this.isAdmin) {
               this.questionsList.push(new Question(item))
