@@ -31,7 +31,6 @@ export class ViewQuestionComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.PostService.currentQuestion) {
-      this.authService.user$.pipe()
       this.getPost(`/questions/${this.dbPath}`)
     } else {
       this.setCurrentQuestion(this.PostService.currentQuestion)

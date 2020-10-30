@@ -23,11 +23,11 @@ export class AuthService {
         return this.currentUser
       }),
       switchMap(()=>this.getAdmins()),
-      switchMap(admins=>{
+      map(admins=>{
         if (this.currentUser){
           this.checkUserIsAdmin(admins,this.currentUser.email)
         }
-        return of(this.currentUser)
+        return this.currentUser
       })
     )
   }

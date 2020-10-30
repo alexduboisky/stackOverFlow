@@ -20,7 +20,7 @@
             <input type="radio" formControlName="questions" value="toApprove" (click)="selectQuestions('toApprove')">
             To Approve
           </label>
-          <label *ngIf="!isAdmin" class="dropdown-item">
+          <label class="dropdown-item">
             <input type="radio" formControlName="questions" value="myQuestions" (click)="selectQuestions(userName)">
             My Questions
           </label>
@@ -77,7 +77,7 @@
             <h5 class="card-title">{{question.title}}</h5>
           </a>
           <hr>
-          <a class="card-link" role="button" (click)="filterByCategory(undefined, tag)" *ngFor="let tag of question['category']">{{tag}}</a>
+          <a class="card-link" role="button"  *ngFor="let tag of question['category']">{{tag}}</a> <!--(click)="filterByCategory(undefined, tag)"-->
         </div>
         <div class="card-footer text-muted text-monospace text-center d-flex justify-content-between">
           <small>{{question.date | date:'dd.MM.yyy'}}</small>
