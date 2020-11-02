@@ -77,7 +77,7 @@
             <h5 class="card-title">{{question.title}}</h5>
           </a>
           <hr>
-          <a class="card-link" role="button"  *ngFor="let tag of question['category']">{{tag}}</a> <!--(click)="filterByCategory(undefined, tag)"-->
+          <a class="card-link" role="button"  *ngFor="let tag of question['category']">{{tag}}</a>
         </div>
         <div class="card-footer text-muted text-monospace text-center d-flex justify-content-between">
           <small>{{question.date | date:'dd.MM.yyy'}}</small>
