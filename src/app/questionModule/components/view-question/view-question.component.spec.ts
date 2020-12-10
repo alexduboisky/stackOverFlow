@@ -6,6 +6,7 @@ import {DatabaseService} from '../../../shared/services/database.service';
 import {AuthService} from '../../../shared/services/auth.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Question} from '../../../shared/classes/question';
+import {of} from 'rxjs';
 
 describe('ViewQuestionComponent',()=>{
 
@@ -15,6 +16,7 @@ describe('ViewQuestionComponent',()=>{
   let authService: AuthService;
   let router: Router;
   let activatedRouter: ActivatedRoute;
+  let question: Question
 
   let routerSpy = {navigate: jasmine.createSpy('navigate')};
 
@@ -23,13 +25,22 @@ describe('ViewQuestionComponent',()=>{
     getPost: (path)=>{}
   }
 
-  let question: Question
+  const activatedRouteStub = {
+    paramMap: {
+      subscribe() {
+        return of();
+      }
+    }
+  };
+
+
+
 
   beforeEach(async(()=>{
       TestBed.configureTestingModule({
         imports:[AppModule, RouterTestingModule],
         declarations:[ViewQuestionComponent],
-        providers: [{provide: DatabaseService, useValue: postServiceStub}, AuthService, Router, ActivatedRoute]
+        providers: [{provide: DatabaseService, useValue: postServiceStub}, AuthService, {provide: Router, useValue: routerSpy}, {provide: ActivatedRoute, useValue: activatedRouteStub}]
       })
         .compileComponents()
   }))
@@ -42,9 +53,11 @@ describe('ViewQuestionComponent',()=>{
     router = fixture.debugElement.injector.get(Router);
     activatedRouter = fixture.debugElement.injector.get(ActivatedRoute);
 
+    fixture.detectChanges();
   });
 
   question = {
+    key: 'sodf08934fm',
     title: 'asd',
     author: 'asd',
     date: '13513511',
@@ -62,7 +75,7 @@ describe('ViewQuestionComponent',()=>{
   describe('editQuestion',()=>{
     it('should navigate to editQuestionComponent', function() {
       component.editQuestion(question)
-      expect (routerSpy.navigate).toHaveBeenCalledWith(['/nocustomer']);
+      expect (routerSpy.navigate).toHaveBeenCalledWith([`/editQuestion/${question.key}`]);
     });
   })
 
