@@ -20,6 +20,7 @@ export class AuthService {
     this.user$ = this.firebaseAuth.authState.pipe(
       map(user=> {
         this.currentUser = user ? new CurrentUser({'email': user.email, 'isAdmin': false}) : null;
+        this.userEmail = this.currentUser.email
         return this.currentUser
       }),
       switchMap(()=>this.getAdmins()),
